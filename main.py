@@ -5,6 +5,7 @@ from flask import render_template,request
 app = Flask(__name__)
 
 system =  ["システム","青山"]
+tmi =["技術","AI"]
 
 @app.route("/")
 def index():
@@ -19,7 +20,7 @@ def add():
             url = "http://www.sys.t.u-tokyo.ac.jp/admissions/" #この""は文字列と認識するためのもの
             break
 
-        elif message == "技術経営戦略学":
+        elif tmi[i] in message:
             url = "http://tmi.t.u-tokyo.ac.jp/examinfo/examinfo.htm"
 
     return render_template('page1.html', user=user, message = message, url = url) #
