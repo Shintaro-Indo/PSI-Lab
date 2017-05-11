@@ -17,10 +17,11 @@ def add():
         if system[i] in message:
             url = "http://www.sys.t.u-tokyo.ac.jp/" #この""は文字列と認識するためのもの
             break
-
         elif tmi[i] in message:
             url = "http://tmi.t.u-tokyo.ac.jp/"
-
+            break
+        else:
+            url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
     return render_template('page1.html', user=user, message = message, url = url) #
 
 if __name__ == "__main__":
