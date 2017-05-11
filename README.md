@@ -1,2 +1,2 @@
-# gsee
-大学院入試情報収集サービス
+# GSI
+Graduate School Information
