@@ -1,5 +1,15 @@
-print("Good evening")
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+    <p>Hello {{ message }} !!!</p><br>
 
-print("hello")
-
-print("good morning")
+    <a href="{{ url_for('index') }}">home</a><br><br>
+    <!--このindexは関数名!-->
+    <a href="http://tmi.t.u-tokyo.ac.jp/examinfo/examinfo.htm">TMI</a>
+</body>
+</html>
