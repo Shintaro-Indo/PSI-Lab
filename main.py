@@ -15,7 +15,7 @@ def index():
 def add():
     user = request.form["user"]
     message = request.form["message"]
-    for i in (0,1):
+    for i in range(len(system)):
         if system[i] in message:
             url = "http://www.sys.t.u-tokyo.ac.jp/admissions/" #この""は文字列と認識するためのもの
             break
