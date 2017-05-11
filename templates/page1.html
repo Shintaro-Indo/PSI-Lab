@@ -1,0 +1,17 @@
+<!-- templates/page1.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>home</title>
+</head>
+<body>
+    <a href="{{ url_for('index') }}">home</a><br><br> <!--このindexは関数名!-->
+    <p> こんにちは {{ user }} さん</p>
+    <p> あなたは {{ message }} に興味があるのですね </p><br>
+    <a href="http://www.sys.t.u-tokyo.ac.jp/admissions/">はい</a><br><br>
+    <!-- <a href="http://www.sys.t.u-tokyo.ac.jp/admissions/">システム創成学専攻</a><br><br>
+    <a href="http://tmi.t.u-tokyo.ac.jp/examinfo/examinfo.htm">経営戦略学専攻</a> -->
+
+</body>
+</html>

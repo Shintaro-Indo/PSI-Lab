@@ -6,11 +6,16 @@
     <title>home</title>
 </head>
 <body>
-    <p>Hello {{ message }} !!!</p><br>
 
-    <a href="{{ url_for('index') }}">home</a><br><br>
-    <!--このindexは関数名!-->
-    <a href="http://tmi.t.u-tokyo.ac.jp/examinfo/examinfo.htm">TMI</a>
+    <form name = 'form' action='/add' method="post">
+        name
+        <input type='text' name='user' value=''><br><br>
+        message
+        <input type='text' name='message' value=''><br><br>
+
+        <input type='submit' name="submit">
+    </form>
+    <br>
 
 </body>
 </html>
