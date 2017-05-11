@@ -2,8 +2,8 @@ from flask import Flask, render_template, request, url_for
 
 app = Flask(__name__)
 
-system =  ["システム","青山"]
-tmi =["技術","AI"]
+system =  ["システム","青山","チンパン",]
+tmi =["技術","AI","経営"]
 
 @app.route("/")
 def index():
@@ -15,11 +15,11 @@ def add():
     message = request.form["message"]
     for i in range(len(system)):
         if system[i] in message:
-            url = "http://www.sys.t.u-tokyo.ac.jp/admissions/" #この""は文字列と認識するためのもの
+            url = "http://www.sys.t.u-tokyo.ac.jp/" #この""は文字列と認識するためのもの
             break
 
         elif tmi[i] in message:
-            url = "http://tmi.t.u-tokyo.ac.jp/examinfo/examinfo.htm"
+            url = "http://tmi.t.u-tokyo.ac.jp/"
 
     return render_template('page1.html', user=user, message = message, url = url) #
 

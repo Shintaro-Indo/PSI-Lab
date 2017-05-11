@@ -1,3 +1,7 @@
 body{
-  background-color: blue;
+  text-align: center;
+  background-color:#DDDDDD;
+}
+input {
+    text-align: center;
 }
