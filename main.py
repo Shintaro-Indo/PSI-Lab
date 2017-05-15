@@ -1,8 +1,21 @@
 from flask import Flask, render_template, request, url_for
+import bs4
+from bs4 import BeautifulSoup
+import urllib.request
+
 
 app = Flask(__name__)
 
-system =  ["システム","青山","チンパン",]
+#システム創成
+sys_url = "http://www.sys.t.u-tokyo.ac.jp/research/"
+soap = bs4.BeautifulSoup(urllib.request.urlopen(sys_url).read(),"lxml")
+sys_keys = soap.find_all('p')
+system=[]
+for t in sys_keys:
+    system.append(t.get_text())
+
+
+   
 tmi =["技術","AI","経営"]
 
 @app.route("/")
@@ -14,10 +27,10 @@ def add():
     user = request.form["user"]
     message = request.form["message"]
     for i in range(len(system)):
-        if system[i] in message:
+        if message in system[i]:
             url = "http://www.sys.t.u-tokyo.ac.jp/" #この""は文字列と認識するためのもの
             break
-        elif tmi[i] in message:
+        elif message in tmi[i]:
             url = "http://tmi.t.u-tokyo.ac.jp/"
             break
         else:
