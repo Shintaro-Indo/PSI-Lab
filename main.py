@@ -14,9 +14,16 @@ system=[]
 for t in sys_keys:
     system.append(t.get_text())
 
+#TMI
+tmi_url = "http://tmi.t.u-tokyo.ac.jp/staff/staff1.htm"
+soap = bs4.BeautifulSoup(urllib.request.urlopen(tmi_url).read(),"lxml")
+tmi_keys = soap.find_all('table')
+tmi=[]
+for t in tmi_keys:
+    tmi.append(t.get_text())
 
-   
-tmi =["技術","AI","経営"]
+
+
 
 @app.route("/")
 def index():
