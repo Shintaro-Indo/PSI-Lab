@@ -30,9 +30,10 @@ def add():
         if message in system[i]:
             url = "http://www.sys.t.u-tokyo.ac.jp/" #この""は文字列と認識するためのもの
             break
-        elif message in tmi[i]:
-            url = "http://tmi.t.u-tokyo.ac.jp/"
-            break
+        elif i<len(tmi):
+            if message in tmi[i]:
+                url = "http://tmi.t.u-tokyo.ac.jp/"
+                break
         else:
             url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
     return render_template('page1.html', user=user, message = message, url = url) #
