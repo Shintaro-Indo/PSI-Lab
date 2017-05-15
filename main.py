@@ -9,7 +9,7 @@ tmi =["技術","AI","経営"]
 def index():
     return render_template('index.html')
 
-@app.route("/add",methods=['POST'])
+@app.route("/add", methods=['POST'])
 def add():
     user = request.form["user"]
     message = request.form["message"]
