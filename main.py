@@ -24,7 +24,6 @@ for t in tmi_keys:
 
 
 
-
 @app.route("/")
 def index():
     return render_template('index.html')

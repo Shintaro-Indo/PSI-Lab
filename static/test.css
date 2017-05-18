@@ -1,0 +1,31 @@
+img{
+  width: 200px;
+  height: 100px;
+}
+
+table {
+    /*align: center; ←これはhtmlに直接書き込まないと無効だった．．．*/
+    margin-left:auto;
+    margin-right:auto;
+    border-collapse:collapse;
+    width:400px;
+  }
+
+table, th, td {
+    border: 1px solid black;
+}
+
+body{
+  text-align:center;
+  background-color:#DDDDDD;
+  /*background-color:blue;*/
+}
+
+input{
+  text-align: center;
+}
+
+hr.dotted{
+  border: none;
+  border-top:dashed 2px #AAA;
+}

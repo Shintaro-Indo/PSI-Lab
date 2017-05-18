@@ -1,0 +1,124 @@
+<!-- templates/tesy.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}"> -->
+    <meta charset="UTF-8">
+    <title>Test</title>
+
+    <!-- CSSファイルを追加 -->
+    <link rel="stylesheet" href="/static/test.css"> <!-- "{{ url_for('static', filename='test.css') }}" ←URLの一部分に複数のURLを生成するとき -->
+
+    <!-- JSファイルを追加 -->
+    <script type="text/javascript" src="/static/test.js"></script>
+
+</head>
+<body>
+    <br>
+    <h2>Refference</h2>
+    <p>http://flask-docs-ja.readthedocs.io/en/latest/quickstart/#quickstart</p>
+    <hr>
+
+
+    <!-- 変数の値を受け取る -->
+    <h2>render_template</h2>
+    <p>Welcome {{ phrase_index }}!</p>
+    <hr>
+
+
+    <!-- jinja2の練習 -->
+    <h2>jinja2</h2>
+    {% if dic_test %}
+        <p>Hi, {{ dic_test.name }}</p>
+        <p>{{ dic_test.message }}</p>
+    {% else %}
+        <p>no dictionary</p>
+    {% endif %}
+    <hr class = "dotted">
+    {% if array_test | length !=0 %} <!-- arrayの空判定．len()はjinja2では使えなかった -->
+        {% for num in array_test %}
+            {{num}}
+        {% endfor %}
+    {% else %}
+        <p>no array</p>
+    {% endif %}
+    <hr>
+
+    <!-- 画像読み込みを追加 -->
+    <h2>Image</h2>
+    <h1><img src="/static/test.png"></h1>
+    <hr>
+
+
+    <h2>Variable Rules</h2>
+    <p>username：{{u_url}}<p>
+    <p>message：{{m_url}}</p>
+    <hr>
+
+
+    <h2>GET1</h2>
+    <p>username：{{u_get1}}</p>
+    <p>message：{{m_get1}}</p>
+    <hr>
+
+
+    <h2>GET2</h2>
+    <form action="/get2" method="get">
+      <input name="user" placeholder="name" type = "text"><br><br> <!-- 変数名username_getの値がChimpanzee-->
+      <input name="message" placeholder="message"><br><br>
+      <input type="submit" value="Send"><br>
+    </form>
+    <hr class="dotted">
+    <p>username：{{u_get2}}</p>
+    <p>message：{{m_get2}}</p>
+    <hr>
+
+
+    <h2>POST</h2>
+    <form action="/post" method="post">
+        <input name="user" placeholder="name" type = "text"><br><br>
+        <input name="message" placeholder="message"><br><br>
+        <button>Send</button><br>
+    </form>
+    <hr class="dotted">
+    <p>username：{{u_post}}</p>
+    <p>message：{{m_post}}</p>
+    <hr>
+
+
+    <h2>BBS with POST</h2><br> <!--変数に格納しているだけなので，再起動すると消えてしまう-->
+    <form action="/bbs" method="post">
+        <input name="user" placeholder="name" type = "text"><br><br>
+        <input name="message" placeholder="message"><br><br>
+        <button>Send</button><br>
+    </form>
+    <hr class="dotted">
+    <table>
+        <tr> <!-- table row-->
+    　       <th>username</th> <!-- table header-->
+            <th>message</th>
+    　   </tr>
+        {% for index in range(users | length) %}
+        <tr>
+            <td>
+            {% if users[index] %}
+                {{ users[index] }}
+            {% else %}
+                none
+            {% endif %}
+            </td>
+            <td>
+            {% if messages[index] %}
+                {{ messages[index] }}
+            {% else %}
+                none
+            {% endif %}
+            </td>
+        <tr>
+        {% endfor %}
+    </table>
+    <br>
+    <hr>
+
+</body>
+</html>
