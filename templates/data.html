@@ -9,14 +9,27 @@
 <body>
     システム創成学専攻<br><br>
 
-    {% for p in system_table %}
-        {{ p.paragraph}}<br>
-    {% endfor %}<br><br><br>
+    <table>
+        <tr> <!-- table row-->
+            <th>paragraph</th> <!-- table header-->
+    　   </tr>
+        {% for p in system_table %}
+        <tr>
+            <td>
+            {{ p.paragraph}}<br>
+            </td>
+        <tr>
+        {% endfor %}<br><br><br>
+    </table>
 
+
+    <hr>
 
     TMI<br><br>
-    {% for p in tmi %}
-        {{ p }}<br><br>
+
+
+    {% for p in _table %}
+        {{ p.paragraph}}<br>
     {% endfor %}<br><br><br>
 
 </body>

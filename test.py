@@ -55,7 +55,7 @@ def teardown_request(exception):
 # データベースに保存されている全てのポストの一覧のページ．データベースから全てのポストを取り出す．
 @app.route("/")
 def show_posts():
-    cur = g.db.execute("select username, message from test order by id desc") #table test から，usernameとめmessageをとってくる．
+    cur = g.db.execute("select username, message from test order by id") #table test から，usernameとめmessageをとってくる． #by id desc とすると上に追加される．
     posts_data = [dict(username=row[0], message=row[1]) for row in cur.fetchall()]
     return render_template("test_show_posts.html", posts=posts_data) # ここのurlがtest.htmlではなく．extends先のshow_posts.htmlだった．
 
