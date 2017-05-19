@@ -16,7 +16,7 @@ for link in a_tag:
         url_list.append(link.attrs['href']) #教授ごとのリンクをリストに
 
 
-#各教授のページからキーワードリストを作成
+#各教授のページからキーワードリストを作成する関数
 def find_keywords(url):
     soup = bs4.BeautifulSoup(urllib.request.urlopen(url).read(),"lxml")
     keys = soup.find_all('li')
@@ -45,7 +45,7 @@ def recomend():
                 break
         # if j == len(key_list):
         #     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
-    return render_template('page1.html', user=user, message = message, url = url)
+    return render_template('result.html', user=user, message = message, url = url)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")

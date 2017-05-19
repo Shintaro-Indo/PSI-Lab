@@ -5,10 +5,9 @@ img{
 
 table {
     /*align: center; ←これはhtmlに直接書き込まないと無効だった．．．*/
-    margin-left:auto;
-    margin-right:auto;
     border-collapse:collapse;
-    width:400px;
+    width:1000px;
+    table-layout: fixed;
   }
 
 table, th, td {

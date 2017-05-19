@@ -1,0 +1,38 @@
+<!-- templates/data.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>データ確認</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+
+    <table>
+        <tr> <!-- table row-->
+            <th width="15">教員名</th>
+            <th width="100">研究テーマ</th> <!-- table header-->
+            <th width="150">研究室の紹介</th>
+            <th width="75">備考1</th>
+            <th >卒業論文テーマ</th>
+            <th width="200" >卒業論文の狙い</th>
+            <th width="300">卒業論文の内容／計画</th>
+            <th width="75">備考2</th>
+    　   </tr>
+        {% for row in teachers_table %}
+            <tr>
+                <td>{{ row.name }}</td>
+                <td>{{ row.research_theme }}</td>
+                <td>{{ row.introduction }}</td>
+                <td>{{ row.remarks1 }}</td>
+                <td>{{ row.graduation_thesis_theme }}</td>
+                <td>{{ row.aim }}</td>
+                <td>{{ row.contents_and_plan }}</td>
+                <td>{{ row.remarks2 }}</td>
+            <tr>
+        {% endfor %}<br><br><br>
+    </table>
+    <br>
+
+</body>
+</html>

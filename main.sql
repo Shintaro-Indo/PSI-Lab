@@ -1,17 +1,12 @@
-drop table if exists system;
-create table system (
+drop table if exists teachers;
+create table teachers(
   id integer primary key autoincrement,
-  paragraph string not null --最後にコンマあるとエラー．
-);
-
-drop table if exists tmi;
-create table tmi (
-  id integer primary key autoincrement,
-  paragraph string not null
-);
-
-drop table if exists aichi;
-create table aichi(
-  id integer primary key autoincrement,
-  paragraph string not null,
+  name text,
+  research_theme text,
+  introduction text,
+  remarks1 text,
+  graduation_thesis_theme text,
+  aim text,
+  contents_and_plan text,
+  remarks2 text
 );

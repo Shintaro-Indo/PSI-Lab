@@ -31,8 +31,31 @@ input#submit_button{
 	color: #fff;
 	line-height: 25px;
 }
+
 input#submit_button:hover {
 	background-color: #f5f5f5;
 	border-color: #000000;
 	color: #000000;
+}
+
+input#add_form {
+	width:35px;
+}
+
+input#add_form:hover {
+	background-color: #f5f5f5;
+	border-color: #000000;
+	color: #000000;
+}
+
+
+table {
+    /*align: center; ←これはhtmlに直接書き込まないと無効だった．．．*/
+    border-collapse:collapse;
+    width:1000px;
+    table-layout: fixed;
+  }
+
+table, th, td {
+    border: 1px solid black;
 }
