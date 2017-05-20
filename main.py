@@ -21,6 +21,7 @@ app.config.from_envvar("TEST_SETTINGS", silent=True) # silent=Truel??
 
 # DB接続
 def connect_db():
+
     return sqlite3.connect(app.config['DATABASE'])
 
 
@@ -62,43 +63,60 @@ for a_tag in a_tag_list:
 # トップページ
 @app.route("/")
 def index():
+
     return render_template('index.html')
 
 
-# DBに格納・DBから抽出する関数
-@app.route("/db")
-def db():
+# DBに格納する関数
+@app.route("/insert")
+def db_insert():
+
+    # テーブルが空の時のみ挿入
     cur = g.db.execute('select name from teachers')
     names = [dict(name=row[0]) for row in cur.fetchall()]
-    if len(names) == 0: # テーブルが空の時のみ挿入
+    if len(names) == 0:
+
         for teacher in range(len(name_list)): #教師のループ
-            if (teacher != 15):
-                titles_list = [] # 見出しを格納するリスト
-                contents_list = [] # 文章を格納するリスト
-                url = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher]
-                html = urllib.request.urlopen(url)
+
+            if (teacher == 15): # 稗方先生だけページの形式が違うので別処理
+                pass
+            else:
+                # 文章をレコードに追加
+                titles_list = [] # 見出しリスト
+                contents_list = [] # レコード
+                url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher]
+                html = urllib.request.urlopen(url_text)
                 soup = BeautifulSoup(html,"lxml")
                 titles_list = soup.find_all("th")
                 contents_list.append(name_list[teacher])
 
-                for title in titles_list: # 見出しのループ
+                for title in titles_list:
                     content = title.nextSibling.nextSibling
                     if (title.string in ["研究テーマ","研究室の紹介","備考"]) or ("卒業論文" in title.string): # 後々使えそうな文章だけ抽出
                         contents_list.append(content.get_text()) # get_text()が最強だった
 
+                # 画像をレコードに追加(手つかず)
+
+
+            # レコードをDBに追加
             g.db.execute('insert into teachers (name,research_theme,introduction,remarks1,graduation_thesis_theme,aim,contents_and_plan, remarks2)\
                         values(?,?,?,?,?,?,?,?)',[content for content in contents_list])
             g.db.commit()
 
-            # 抽出
-            cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
-            table = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6], remarks2=row[7]) for row in cur.fetchall()]
-        return render_template('show_data.html', teachers_table = table)
 
-    else: #テーブルが空でない場合は抽出のみを行う
-        cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
-        data = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6], remarks2=row[7]) for row in cur.fetchall()]
-        return render_template('show_data.html', teachers_table = data)
+
+    return redirect(url_for('db_show')) # リダイレクトは関数名を指定
+
+
+# DBを表示するための関数
+@app.route("/db")
+def db_show():
+    # 抽出
+    cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
+    table = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6],\
+            remarks2=row[7]) for row in cur.fetchall()]
+
+    return render_template('show_data.html', teachers_table = table)
 
 
 # レコメンド
@@ -152,6 +170,7 @@ def recomend():
     return render_template('result.html', user=user,
     message1 = message1, message2 = message2,
     url1 = recommend[0],url2 = recommend[1])
+
 
 # アプリ起動
 if __name__ == "__main__":
