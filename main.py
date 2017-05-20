@@ -131,14 +131,17 @@ def recomend():
         if message2 in sentences:
             suggest2.append(link)
 
+　　　#setに変換して論理演算可能に
     suggest1_set = set(suggest1)
     suggest2_set = set(suggest2)
     suggest3 = list(suggest1_set ^ suggest2_set)
     recommend = list(suggest1_set & suggest2_set)
 
+   #まずmessage1かつmessage2が入っているurlを入れる
     for i in range(len(suggest3)):
         recommend.append(suggest3[i])
 
+　　#recommendが少なくとも２つ要素を持つようにチンパンジーの画像で調整
     if len(recommend) ==0:
         recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
         recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
