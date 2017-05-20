@@ -106,22 +106,49 @@ def db():
 def recomend():
     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
     user = request.form["user"]
-    message = request.form["message"]
+    message1 = request.form["message1"]
+    message2 = request.form["message2"]
 
     # DBから抽出するための準備
     cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
     table = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6],\
             remarks2=row[7]) for row in cur.fetchall()]
 
+    suggest1=[]
+    suggest2=[]
+    suggest3=[]
+    recommend = []
+
     for i in range(len(url_list)):
         link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
         sentences = table[i]["graduation_thesis_theme"] # 卒論テーマの文章を抽出
-        if message in sentences:
-            url  = link
-            break
+        if message1 in sentences:
+            suggest1.append(link)
+    print(suggest1)
+    for i in range(len(url_list)):
+        link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
+        sentences = table[i]["graduation_thesis_theme"] # 卒論テーマの文章を抽出
+        if message2 in sentences:
+            suggest2.append(link)
 
-    return render_template('result.html', user=user, message = message, url = url)
+    suggest1_set = set(suggest1)
+    suggest2_set = set(suggest2)
+    suggest3 = list(suggest1_set ^ suggest2_set)
+    recommend = list(suggest1_set & suggest2_set)
 
+    for i in range(len(suggest3)):
+        recommend.append(suggest3[i])
+
+    if len(recommend) ==0:
+        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+    if len(recommend)==1:
+        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+
+
+    return render_template('result.html', user=user,
+    message1 = message1, message2 = message2,
+    url1 = recommend[0],url2 = recommend[1])
 
 # アプリ起動
 if __name__ == "__main__":
