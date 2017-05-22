@@ -1,4 +1,4 @@
-<!-- templates/data.html -->
+<!-- templates/show_data.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -9,9 +9,9 @@
 <body>
 
     <table>
-        <tr> <!-- table row-->
+        <tr>
             <th width="15">教員名</th>
-            <th width="985">キーワード</th> <!-- table header-->
+            <th width="985">キーワード</th>
     　   </tr>
 
         {% for row in teachers_table %}
@@ -22,6 +22,14 @@
         {% endfor %}<br><br><br>
     </table>
     <br>
+
+    <form action="{{ url_for('db_insert') }}" method="post">
+        <input type="submit" value="Insert data">
+    </form><br>
+
+    <form action="{{ url_for('delete') }}" method="post">
+        <input type="submit" value="Clear all data">
+    </form>
 
 </body>
 </html>
