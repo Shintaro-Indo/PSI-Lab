@@ -20,12 +20,11 @@ SECRET_KEY = 'development key'
 # アプリのインスタンスを作成
 app = Flask(__name__)
 app.config.from_object(__name__) # 与えられたオブジェクトの内で大文字の変数をすべて取得する．
-app.config.from_envvar("TEST_SETTINGS", silent=True) # silent=Truel??
+app.config.from_envvar("TEST_SETTINGS", silent=True) # silentは設定されていない環境変数をFlaskに伝えないように切り替わる．
 
 
 # DB接続
 def connect_db():
-
     return sqlite3.connect(app.config['DATABASE'])
 
 
@@ -37,13 +36,13 @@ def init_db():
         db.commit()
 
 
-# データベースのリクエスト前に呼ばれ，データベース接続などを行う．
+# DBのリクエスト前に呼ばれ，DB接続などを行う．
 @app.before_request
 def before_request():
     g.db = connect_db() # g：とりあえず全てを格納する変数．データベースのコネクションやログインしてるユーザ情報など．
 
 
-# データベースのリクエスト後に呼ばれ，データベースのクローズなどを行う
+# DBのリクエスト後に呼ばれ，DBのクローズなどを行う
 @app.teardown_request
 def teardown_request(exception):
     db = getattr(g, "db", None)
@@ -51,14 +50,14 @@ def teardown_request(exception):
         db.close()
 
 
-# name_list, url_listを作成
-original_url = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/index.html" # index
+# 教員のname_list, url_listを作成
+url_list = []
+name_list = []
+original_url = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/index.html"
 html = urllib.request.urlopen(original_url)
 soup = bs4.BeautifulSoup(html.read(),"lxml")
 a_tag_all = soup.find_all('a')
-a_tag_list = a_tag_all[2:-1] # スライスを利用して該当箇所のみ抽出
-url_list = []
-name_list = []
+a_tag_list = a_tag_all[2:-1] # スライスで該当箇所のみ抽出
 for a_tag in a_tag_list:
     url_list.append(a_tag.attrs['href'])
     name_list.append(a_tag.string)
@@ -67,85 +66,90 @@ for a_tag in a_tag_list:
 # トップページ
 @app.route("/")
 def index():
-
     return render_template('index.html')
 
 
-# DBに格納する関数
-@app.route("/insert")
+# DBに挿入
+@app.route("/insert", methods=['POST'])
 def db_insert():
 
+    # テーブルが空の時のみ挿入
     cur = g.db.execute('select name from teachers')
     names = [dict(name=row[0]) for row in cur.fetchall()]
-    if len(names) == 0: # テーブルが空の時のみ挿入
-        for teacher_index in range(len(name_list)): #教師のループ
-            # if(teacher_index == 15): # 稗方研のみHTMLの構造が違う
-            if(teacher_index != 15):
-                # 教員名をレコードに追加
-                titles_list = [] # 見出しリスト
-                contents_list = [] # レコード
+    if len(names) == 0:
 
-                url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
-                html = urllib.request.urlopen(url_text)
-                soup = BeautifulSoup(html,"lxml")
-                titles_list = soup.find_all("th")
-                contents_list.append(name_list[teacher_index])
+        # 各教師のループ
+        for teacher_index in range(len(name_list)):
 
-                # キーワードが含まれる文章を
-                sentences = ""
-                for title in titles_list:
-                    content = title.nextSibling.nextSibling
-                    if (title.string in [ u"研究テーマ", u"研究室の紹介", u"備考"]) or ( u"卒業論文" in title.string):
-                        sentences += content.get_text() # テキストを取得するにはget_text()がstringよりも便利．
+            contents_list = [] # レコードとして使用
+            titles_list = [] # 見出しリスト
 
-                noun_list = []
-                type_list = []
+            # 教員名をレコードに追加
+            url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
+            html = urllib.request.urlopen(url_text)
+            soup = BeautifulSoup(html,"lxml")
+            titles_list = soup.find_all("th")
+            contents_list.append(name_list[teacher_index])
 
-                tagger = MeCab.Tagger()
-                tagger.parse('')  # これを追記することでUnicodeError解決
-                node = tagger.parseToNode(sentences)
+            # キーワードが含まれそうな文章を結合
+            sentences = ""
+            for title in titles_list:
+                content = title.nextSibling.nextSibling
+                if (title.string in [ u"研究テーマ", u"研究室の紹介", u"備考"]) or ( u"卒業論文" in title.string):
+                    sentences += content.get_text() # テキストを取得するにはget_text()が.stringよりも便利．
 
-                while node:
-                    if node.feature.split(",")[0] == u"名詞" and node.surface != None:
-                        noun_list.append(node.surface)
-                        type_list.append(node.feature)
-                    node = node.next
+            # sentencesをMeCabを使って形態素解析
+            tagger = MeCab.Tagger()
+            tagger.parse('')  # これを追記することでUnicodeError解決
+            node = tagger.parseToNode(sentences)
 
-                keyword_list = []
-                for index in range(len(noun_list)):
-                    types = type_list[index].split(",")
-                    if types[1] in [ u"代名詞", u"非自立", u"接尾", u"数", u"副詞可能"]:
-                        pass
-                    elif len(types) >= 7 and types[6]== "*":
-                        pass
-                    else:
-                        keyword_list.append(noun_list[index])
+            noun_list = [] # 名詞リスト
+            type_list = [] # 品詞等の情報
+            while node:
+                if node.feature.split(",")[0] == u"名詞":
+                    noun_list.append(node.surface)
+                    type_list.append(node.feature)
+                node = node.next
 
-                # キーワードをレコードに追加
-                keyword_count = {}
-                for keyword in keyword_list:
-                    keyword_count.setdefault(keyword,0)
-                    keyword_count[keyword] += 1
+            # キーワードになり得ない名詞を排除．
+            keyword_list = []
+            for index in range(len(noun_list)):
+                types = type_list[index].split(",")
+                if types[1] in [ u"代名詞", u"非自立", u"接尾", u"数", u"副詞可能"]:
+                    pass
+                elif len(types) >= 7 and types[6]== "*":
+                    pass
+                else:
+                    keyword_list.append(noun_list[index])
 
-                keyword_count = sorted(keyword_count.items(),key=lambda x:x[1],reverse=True)
+            # キーワードと出現回数をディクショナリに保存
+            keyword_count = {}
+            for keyword in keyword_list:
+                keyword_count.setdefault(keyword,0)
+                keyword_count[keyword] += 1
+            keyword_count = sorted(keyword_count.items(),key=lambda x:x[1],reverse=True) # 出現回数が多い順に並び替え
 
-                keywords = ""
-                for word, count in keyword_count:
-                    if count >= 2:
-                        keywords += word + ":" + str(count) + " "
+            # 出現回数が三回以上のキーワードを一文にまとめる．
+            keywords = ""
+            for word, count in keyword_count:
+                if count >= 3:
+                    keywords += word + ":" + str(count) + " "
 
-                contents_list.append(keywords)
+            # キーワードをレコードに追加．
+            contents_list.append(keywords)
 
-                # 画像をレコードに追加(手つかず)
 
-                # レコードをDBに追加
-                g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
-                g.db.commit()
+            # 画像をレコードに追加(手つかず)
+
+
+            # レコードをDBに追加
+            g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
+            g.db.commit()
 
     return redirect(url_for('db_show')) # リダイレクトは関数名を指定
 
 
-# DB表示のための関数
+# DBを表示
 @app.route("/db")
 def db_show():
     # 抽出
@@ -155,12 +159,12 @@ def db_show():
     return render_template('show_data.html', teachers_table = table)
 
 
-# データ削除のための関数
-# @app.route('/deleted', methods=['POST']) # POSTリクエストのみが受け付けられる
-# def delete_posts():
-#     g.db.execute('delete from teachers ')
-#     g.db.commit()
-#     return redirect(url_for('index')) #
+# データ削除
+@app.route('/deleted', methods=['POST']) # POSTリクエストのみが受け付けられる
+def delete():
+    g.db.execute('delete from teachers ')
+    g.db.commit()
+    return redirect(url_for('db_show'))
 
 
 # レコメンド
