@@ -1,8 +1,7 @@
-<!-- templates/tesy.html -->
+<!-- templates/test.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}"> -->
     <meta charset="UTF-8">
     <title>Test</title>
 
@@ -35,7 +34,7 @@
         <p>no dictionary</p>
     {% endif %}
     <hr class = "dotted">
-    {% if array_test | length !=0 %} <!-- arrayの空判定．len()はjinja2では使えなかった -->
+    {% if array_test | length !=0 %} <!-- arrayの空判定．len()はjinja2では使えない -->
         {% for num in array_test %}
             {{num}}
         {% endfor %}
@@ -44,7 +43,6 @@
     {% endif %}
     <hr>
 
-    <!-- 画像読み込みを追加 -->
     <h2>Image</h2>
     <h1><img src="/static/test.png"></h1>
     <hr>
@@ -64,7 +62,7 @@
 
     <h2>GET2</h2>
     <form action="/get2" method="get">
-      <input name="user" placeholder="name" type = "text"><br><br> <!-- 変数名username_getの値がChimpanzee-->
+      <input name="user" placeholder="name" type = "text"><br><br>
       <input name="message" placeholder="message"><br><br>
       <input type="submit" value="Send"><br>
     </form>
@@ -94,8 +92,8 @@
     </form>
     <hr class="dotted">
     <table>
-        <tr> <!-- table row-->
-    　       <th>username</th> <!-- table header-->
+        <tr>
+    　       <th>username</th> 
             <th>message</th>
     　   </tr>
         {% for index in range(users | length) %}

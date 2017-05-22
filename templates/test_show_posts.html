@@ -2,20 +2,19 @@
 {% block body %}
     {% if session.logged_in %}
         <br>
-        <form action="{{ url_for('add_posts') }}" method="post"> <!-- ここのurl_forもいじる必要あった． -->
+        <form action="{{ url_for('add_posts') }}" method="post">
             Username<br>
-            <input type="text" name="username_post"><br><br><!-- nameの設定重要！ size=30  -->
+            <input type="text" name="username_post"><br><br><!-- nameの設定重要！ -->
             Message<br>
             <input type="text" name="message_post"><br><br>
-            <!-- <textarea name="message_post"></textarea><br><br>  rows=5 cols=40 -->
             <input type="submit" value="Send">
         </form>
     {% endif %}
     <br>
     <hr>
     <table>
-        <tr> <!-- table row-->
-            <th>username</th> <!-- table header-->
+        <tr>
+            <th>username</th> 
             <th>message</th>
     　   </tr>
         {% for post in posts %}

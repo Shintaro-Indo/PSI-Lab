@@ -17,12 +17,6 @@ app.config.from_envvar("TEST_SETTINGS", silent=True) #silent=True??
 
 
 # 掲示板に関連する機能＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
-# 何やってるのかわからない変数
-# ・curの意味．
-# ・g.execute
-# ・g.db.execute()
-# ・cur.fetchall()
-# ・flash
 
 # DB接続
 def connect_db():
