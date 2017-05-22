@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
+    <br>
 
     <table>
         <tr>
             <th width="15">教員名</th>
-            <th width="985">キーワード</th>
+            <th id = "keywords" width="985">キーワード</th>
     　   </tr>
 
         {% for row in teachers_table %}
@@ -19,17 +20,23 @@
             <td>{{ row.name }}</td>
             <td>{{ row.keywords }}</td>
         <tr>
-        {% endfor %}<br><br><br>
+        {% endfor %}
     </table>
     <br>
+    <br>
 
-    <form action="{{ url_for('db_insert') }}" method="post">
+
+    <form action="{{ url_for('db_insert') }}" method="post" id = "insert">
         <input type="submit" value="Insert data">
-    </form><br>
+    </form>
 
-    <form action="{{ url_for('delete') }}" method="post">
+    <form action="{{ url_for('delete') }}" method="post" id="delete">
         <input type="submit" value="Clear all data">
     </form>
+
+    <br>
+    <br>
+    <br>
 
 </body>
 </html>

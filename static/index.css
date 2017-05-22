@@ -50,13 +50,29 @@ input#add_form:hover {
 
 
 table {
-    /*align: center; ←これはhtmlに直接書き込まないと無効だった．．．*/
-    border-collapse:collapse;
-    width:1000px;
-    table-layout: fixed;
-    margin:0 auto;
-  }
+  /*align: center; ←これはhtmlに直接書き込まないと無効だった*/
+  border-collapse:collapse;
+  width:1000px;
+  table-layout: fixed;
+  margin:0 auto;
+  text-align: center justify;
+}
 
 table, th, td {
-    border: 1px solid black;
+  border: 1px solid black;
+  padding: 10px 20px;
+}
+
+#keywords{
+  padding: 10px 0px;
+  text-align: center justify;
+}
+
+#insert{
+  float:left;
+  margin-left:45%;
+}
+#delete{
+  float:left;
+  margin-left:20px;
 }
