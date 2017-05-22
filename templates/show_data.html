@@ -13,11 +13,12 @@
             <th width="15">教員名</th>
             <th width="985">キーワード</th> <!-- table header-->
     　   </tr>
+
         {% for row in teachers_table %}
-            <tr>
-                <td>{{ row.name }}</td>
-                <td>{{ row.keywords }}</td>
-            <tr>
+        <tr>
+            <td>{{ row.name }}</td>
+            <td>{{ row.keywords }}</td>
+        <tr>
         {% endfor %}<br><br><br>
     </table>
     <br>

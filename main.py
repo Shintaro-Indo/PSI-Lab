@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+CharEncoding = 'utf-8'
 
 from flask import Flask, render_template, request, url_for, session, g, redirect, abort, flash
 import bs4
@@ -79,6 +79,7 @@ def db_insert():
     names = [dict(name=row[0]) for row in cur.fetchall()]
     if len(names) == 0: # テーブルが空の時のみ挿入
         for teacher_index in range(len(name_list)): #教師のループ
+            # if(teacher_index == 15): # 稗方研のみHTMLの構造が違う
             if(teacher_index != 15):
                 # 教員名をレコードに追加
                 titles_list = [] # 見出しリスト
@@ -90,20 +91,19 @@ def db_insert():
                 titles_list = soup.find_all("th")
                 contents_list.append(name_list[teacher_index])
 
-                # キーワードをレコードに追加．
+                # キーワードが含まれる文章を
                 sentences = ""
                 for title in titles_list:
                     content = title.nextSibling.nextSibling
-                    if (title.string in [ u"研究テーマ", u"研究室の紹介", u"備考"]) or ( u"卒業論文" in title.string): # 後々使えそうな文章だけ抽出
-                        sentences += content.get_text() # get_text()が最強だった
+                    if (title.string in [ u"研究テーマ", u"研究室の紹介", u"備考"]) or ( u"卒業論文" in title.string):
+                        sentences += content.get_text() # テキストを取得するにはget_text()がstringよりも便利．
 
-                # uni_sentences = unicode(sentences, 'utf_8')
-
-                noun_list = [] # 541
-                type_list = [] # 541
+                noun_list = []
+                type_list = []
 
                 tagger = MeCab.Tagger()
-                node = tagger.parseToNode(sentences) #node = tagger.parse(sentences) これではない
+                tagger.parse('')  # これを追記することでUnicodeError解決
+                node = tagger.parseToNode(sentences)
 
                 while node:
                     if node.feature.split(",")[0] == u"名詞" and node.surface != None:
@@ -145,7 +145,7 @@ def db_insert():
     return redirect(url_for('db_show')) # リダイレクトは関数名を指定
 
 
-# DBを表示するための関数
+# DB表示のための関数
 @app.route("/db")
 def db_show():
     # 抽出
@@ -155,12 +155,12 @@ def db_show():
     return render_template('show_data.html', teachers_table = table)
 
 
-# データを削除するための関数
+# データ削除のための関数
 # @app.route('/deleted', methods=['POST']) # POSTリクエストのみが受け付けられる
 # def delete_posts():
 #     g.db.execute('delete from teachers ')
 #     g.db.commit()
-#     return redirect(url_for('index')) #エントリーの追加処理が正常終了するとshow_postsページにリダイレクトされる．これは関数名．
+#     return redirect(url_for('index')) #
 
 
 # レコメンド
