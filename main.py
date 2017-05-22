@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+
 from flask import Flask, render_template, request, url_for, session, g, redirect, abort, flash
 import bs4
 from bs4 import BeautifulSoup
@@ -5,6 +8,7 @@ import urllib.request
 import sqlite3
 from contextlib import closing
 import numpy as np
+import MeCab
 
 
 # 各種設定
@@ -71,39 +75,72 @@ def index():
 @app.route("/insert")
 def db_insert():
 
-    # テーブルが空の時のみ挿入
     cur = g.db.execute('select name from teachers')
     names = [dict(name=row[0]) for row in cur.fetchall()]
-    if len(names) == 0:
-
-        for teacher in range(len(name_list)): #教師のループ
-
-            if (teacher == 15): # 稗方先生だけページの形式が違うので別処理
-                pass
-            else:
-                # 文章をレコードに追加
+    if len(names) == 0: # テーブルが空の時のみ挿入
+        for teacher_index in range(len(name_list)): #教師のループ
+            if(teacher_index != 15):
+                # 教員名をレコードに追加
                 titles_list = [] # 見出しリスト
                 contents_list = [] # レコード
-                url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher]
+
+                url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
                 html = urllib.request.urlopen(url_text)
                 soup = BeautifulSoup(html,"lxml")
                 titles_list = soup.find_all("th")
-                contents_list.append(name_list[teacher])
+                contents_list.append(name_list[teacher_index])
 
+                # キーワードをレコードに追加．
+                sentences = ""
                 for title in titles_list:
                     content = title.nextSibling.nextSibling
-                    if (title.string in ["研究テーマ","研究室の紹介","備考"]) or ("卒業論文" in title.string): # 後々使えそうな文章だけ抽出
-                        contents_list.append(content.get_text()) # get_text()が最強だった
+                    if (title.string in [ u"研究テーマ", u"研究室の紹介", u"備考"]) or ( u"卒業論文" in title.string): # 後々使えそうな文章だけ抽出
+                        sentences += content.get_text() # get_text()が最強だった
+
+                # uni_sentences = unicode(sentences, 'utf_8')
+
+                noun_list = [] # 541
+                type_list = [] # 541
+
+                tagger = MeCab.Tagger()
+                node = tagger.parseToNode(sentences) #node = tagger.parse(sentences) これではない
+
+                while node:
+                    if node.feature.split(",")[0] == u"名詞" and node.surface != None:
+                        noun_list.append(node.surface)
+                        type_list.append(node.feature)
+                    node = node.next
+
+                keyword_list = []
+                for index in range(len(noun_list)):
+                    types = type_list[index].split(",")
+                    if types[1] in [ u"代名詞", u"非自立", u"接尾", u"数", u"副詞可能"]:
+                        pass
+                    elif len(types) >= 7 and types[6]== "*":
+                        pass
+                    else:
+                        keyword_list.append(noun_list[index])
+
+                # キーワードをレコードに追加
+                keyword_count = {}
+                for keyword in keyword_list:
+                    keyword_count.setdefault(keyword,0)
+                    keyword_count[keyword] += 1
+
+                keyword_count = sorted(keyword_count.items(),key=lambda x:x[1],reverse=True)
+
+                keywords = ""
+                for word, count in keyword_count:
+                    if count >= 2:
+                        keywords += word + ":" + str(count) + " "
+
+                contents_list.append(keywords)
 
                 # 画像をレコードに追加(手つかず)
 
-
-            # レコードをDBに追加
-            g.db.execute('insert into teachers (name,research_theme,introduction,remarks1,graduation_thesis_theme,aim,contents_and_plan, remarks2)\
-                        values(?,?,?,?,?,?,?,?)',[content for content in contents_list])
-            g.db.commit()
-
-
+                # レコードをDBに追加
+                g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
+                g.db.commit()
 
     return redirect(url_for('db_show')) # リダイレクトは関数名を指定
 
@@ -112,11 +149,18 @@ def db_insert():
 @app.route("/db")
 def db_show():
     # 抽出
-    cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
-    table = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6],\
-            remarks2=row[7]) for row in cur.fetchall()]
+    cur = g.db.execute('select name, keywords from teachers')
+    table = [dict(name=row[0],keywords=row[1]) for row in cur.fetchall()]
 
     return render_template('show_data.html', teachers_table = table)
+
+
+# データを削除するための関数
+# @app.route('/deleted', methods=['POST']) # POSTリクエストのみが受け付けられる
+# def delete_posts():
+#     g.db.execute('delete from teachers ')
+#     g.db.commit()
+#     return redirect(url_for('index')) #エントリーの追加処理が正常終了するとshow_postsページにリダイレクトされる．これは関数名．
 
 
 # レコメンド
@@ -128,24 +172,23 @@ def recomend():
     message2 = request.form["message2"]
 
     # DBから抽出するための準備
-    cur = g.db.execute('select name, research_theme, introduction, remarks1, graduation_thesis_theme, aim, contents_and_plan, remarks2 from teachers')
-    table = [dict(name=row[0],research_theme=row[1], introduction=row[2], remarks1=row[3], graduation_thesis_theme=row[4], aim=row[5], contents_and_plan=row[6],\
-            remarks2=row[7]) for row in cur.fetchall()]
+    cur = g.db.execute('select name, keywords from teachers')
+    keyword_array = [dict(name=row[0], keywords=row[1]) for row in cur.fetchall()]
 
     suggest1=[]
     suggest2=[]
     suggest3=[]
-    recommend = []
+    recommend=[]
 
-    for i in range(len(url_list)):
+    for i in range(len(url_list)-1): #稗方先生の分無理やり調整してる．あとで直す．
         link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
-        sentences = table[i]["graduation_thesis_theme"] # 卒論テーマの文章を抽出
+        sentences = keyword_array[i]["keywords"] # キーワードを抽出
         if message1 in sentences:
             suggest1.append(link)
     print(suggest1)
-    for i in range(len(url_list)):
+    for i in range(len(url_list)-1):
         link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
-        sentences = table[i]["graduation_thesis_theme"] # 卒論テーマの文章を抽出
+        sentences = keyword_array[i]["keywords"]
         if message2 in sentences:
             suggest2.append(link)
 
@@ -169,7 +212,7 @@ def recomend():
 
     return render_template('result.html', user=user,
     message1 = message1, message2 = message2,
-    url1 = recommend[0],url2 = recommend[1])
+    url1 = recommend[0], url2 = recommend[1])
 
 
 # アプリ起動
