@@ -65,6 +65,17 @@ for a_tag in a_tag_list:
     url_list.append(a_tag.attrs['href'])
     name_list.append(a_tag.string)
 
+
+img_list = ["img/teach_aichi.jpg","img/teach_aoyama.jpg","img/teacher_abe.jpg",
+            "img/teach_ihara.jpg","img/teach_ozaki.jpg","img/teach_kageyama.jpg",
+            "img/teach_kuriyama.jpg","img/teach_kuriyama.jpg","img/teach_shibanuma.png",
+            "img/teach_shirayama.jpg","img/teach_suzuki2.jpg","img/teach_f_takeda.jpg",
+            "img/teach_tanaka2.jpg","img/teacher_nawata.jpg","img/teacher_nishino.jpg",
+            "img/teacher_hiekata.jpg","img/teach_fujita.jpg","img/teach_matsuo.jpg",
+            "img/teach_matsushima2.jpg","img/teach_murayama2.jpg","img/teach_mogi.jpg",
+            "img/teach_motohashi2.jpg","img/teach_yoshida2.jpg",
+            "img/teach_yamaguchi.jpg","img/teach_rokugawa.jpg"]
+
 # トップページ
 @app.route("/")
 def index():
@@ -230,12 +241,17 @@ def recomend():
         score_array = np.array(score_list)
         recomend_index1 = score_array.argsort()[::-1][0]
         recomend_index2 = score_array.argsort()[::-1][1]
+        recomend_index3 = score_array.argsort()[::-1][2]
 
         return render_template(
             'result.html',
             message = message_list,
             url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index1],
             url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2],
+            url3 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index3],
+            img_url1 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index1],
+            img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index2],
+            img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3]
         )
 
 # アプリ起動
