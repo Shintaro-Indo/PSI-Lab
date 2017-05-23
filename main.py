@@ -187,16 +187,16 @@ def delete():
 
 
 # レコメンド
-@app.route("/recomend", methods=['POST'])
-def recomend():
+@app.route("/result", methods=['POST'])
+def recommend():
 
     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
 
-    message_list  = request.form.getlist("message[]") # ユーザーからの入力が配列として格納される
+    message_list  = request.form.getlist("message[]") # ユーザーからの入力を配列として受け取れる
 
     # 入力がない場合は入力を促す
     if message_list[0] == "":
-        error = "興味のある分野を入力してください"
+        error = "入力がありません"
         return render_template('index.html', error_message = error)
 
     # 入力があった場合
@@ -242,26 +242,26 @@ def recomend():
 
         # レコメンドする研究室のインデックスを取得
         score_array = np.array(score_list)
-        recomend_index1 = score_array.argsort()[::-1][0]
-        recomend_index2 = score_array.argsort()[::-1][1]
-        recomend_index3 = score_array.argsort()[::-1][2]
+        recommend_index1 = score_array.argsort()[::-1][0]
+        recommend_index2 = score_array.argsort()[::-1][1]
+        recommend_index3 = score_array.argsort()[::-1][2]
 
         return render_template(
             'result.html',
 
             message = message_list,
 
-            url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index1],
-            url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2],
-            url3 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index3],
+            url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recommend_index1],
+            url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recommend_index2],
+            url3 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recommend_index3],
 
-            img_url1 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index1],
-            img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index2],
-            img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3],
+            img_url1 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recommend_index1],
+            img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recommend_index2],
+            img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recommend_index3],
 
-            name1 = name_list[recomend_index1],
-            name2 = name_list[recomend_index2],
-            name3 = name_list[recomend_index3]
+            name1 = name_list[recommend_index1],
+            name2 = name_list[recommend_index2],
+            name3 = name_list[recommend_index3]
         )
 
 # アプリ起動
