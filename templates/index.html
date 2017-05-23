@@ -49,6 +49,7 @@
         if(message_num == 1){
             return;
         }else{
+            message_num -= 1
             var div_element = document.createElement("div");
             div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
             var parent_object = document.getElementById("piyo");
