@@ -8,7 +8,10 @@
 </head>
 <body>
     <br>
-    <p>  {{ message1 }}と{{ message2}} に興味がある {{ user }} さんにおすすめの専攻を紹介します </p>
+    <p>  {{ message[0] }} {{ message[1] }} {{ message[2] }} {{ message[3] }} {{ message[4] }}に興味がある {{ user }} さんにおすすめの専攻を紹介します </p>
+
+    <!-- <img src="http://www.si.t.u-tokyo.ac.jp/psi/teachers/img/teach_aichi.jpg"> -->
+
     <a href = "{{url1}}" >卒業論文のテーマを見てみる</a><br><br>
 　　<a href = "{{url2}}" >他の候補を見てみる</a><br><br>
         <a href="{{ url_for('index') }}">戻る</a><br> <!--このindexは関数名!-->

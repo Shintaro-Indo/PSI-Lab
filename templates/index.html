@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" charset="UTF-8">
     <title>home</title>
 </head>
 <body>
@@ -15,12 +15,27 @@
     <form name = 'form' action='/recomend' method="post">
         名前<br>
         <input id="name_form" type='text' name='user' value='青山'><br><br>
-        興味のある分野<br>
-        <input id="msg_form" type='text' name='message1' value='システム'><br><br>
-        <input id="msg_form" type='text' name='message2' value='サービス'><br><br>
+        興味のある分野<br><br>
+        <input id="msg_form" type='text' name='message[]' value=''><br><br>
+        <div id="piyo"></div>
         <input id ="submit_button" type='submit' name="summit" value = "検索" >
-    </form>
+    </form><br>
+
+    <button id = "add_input">入力欄を追加</button><br><br>
     </h2>
 
+    <script>
+    // 入力欄を追加(最大5つ)
+    var message_num = 1
+    document.getElementById("add_input").onclick = function(){
+        message_num += 1
+        if (message_num <= 5){
+            var div_element = document.createElement("div");
+            div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
+            var parent_object = document.getElementById("piyo");
+            parent_object.appendChild(div_element);
+        }
+    }
+    </script>
 </body>
 </html>

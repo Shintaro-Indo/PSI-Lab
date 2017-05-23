@@ -54,9 +54,9 @@ def teardown_request(exception):
 url_list = []
 name_list = []
 original_url = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/index.html"
-html = urllib.request.urlopen(original_url)
-soup = bs4.BeautifulSoup(html.read(),"lxml")
-a_tag_all = soup.find_all('a')
+html_index = urllib.request.urlopen(original_url)
+soup_index = bs4.BeautifulSoup(html_index.read(),"lxml")
+a_tag_all = soup_index.find_all('a')
 a_tag_list = a_tag_all[2:-1] # スライスで該当箇所のみ抽出
 for a_tag in a_tag_list:
     url_list.append(a_tag.attrs['href'])
@@ -86,9 +86,9 @@ def db_insert():
 
             # 教員名をレコードに追加
             url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
-            html = urllib.request.urlopen(url_text)
-            soup = BeautifulSoup(html,"lxml")
-            titles_list = soup.find_all("th")
+            html_name = urllib.request.urlopen(url_text)
+            soup_name = BeautifulSoup(html_name,"lxml")
+            titles_list = soup_name.find_all("th")
             contents_list.append(name_list[teacher_index])
 
             # キーワードが含まれそうな文章を結合
@@ -142,6 +142,8 @@ def db_insert():
             # 画像をレコードに追加(手つかず)
 
 
+
+
             # レコードをDBに追加
             g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
             g.db.commit()
@@ -172,8 +174,9 @@ def delete():
 def recomend():
     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
     user = request.form["user"]
-    message1 = request.form["message1"]
-    message2 = request.form["message2"]
+    message_list  = request.form.getlist("message[]")
+    # message1 = message_list[0]
+    # message2 = message_list[1]
 
     # DBから抽出するための準備
     cur = g.db.execute('select name, keywords from teachers')
@@ -184,19 +187,14 @@ def recomend():
     suggest3=[]
     recommend=[]
 
-    for i in range(len(url_list)-1): #稗方先生の分無理やり調整してる．あとで直す．
-        link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
-        sentences = keyword_array[i]["keywords"] # キーワードを抽出
-        if message1 in sentences:
-            suggest1.append(link)
-    print(suggest1)
-    for i in range(len(url_list)-1):
-        link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[i]
-        sentences = keyword_array[i]["keywords"]
-        if message2 in sentences:
-            suggest2.append(link)
-
-    #setに変換して論理演算可能に
+    for message_index in range(len(message_list)):
+        message = message_list[message_index]
+        for teacher_index in range(len(url_list)):
+            link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
+            sentences = keyword_array[teacher_index]["keywords"] # キーワードを抽出
+            if message in sentences:
+                suggest1.append(link)
+                
     suggest1_set = set(suggest1)
     suggest2_set = set(suggest2)
     suggest3 = list(suggest1_set ^ suggest2_set)
@@ -213,9 +211,12 @@ def recomend():
     if len(recommend)==1:
         recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
 
-
+    # message_list = []
+    # message_list.append(message1)
+    # if message2:
+    #     message_list.append(message2)
     return render_template('result.html', user=user,
-    message1 = message1, message2 = message2,
+    message = message_list,
     url1 = recommend[0], url2 = recommend[1])
 
 
