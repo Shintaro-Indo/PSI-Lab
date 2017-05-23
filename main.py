@@ -178,7 +178,6 @@ def recomend():
     # 入力がない場合は入力を促す
     if message_list[0] == "":
         error = "興味のある分野を入力してください"
-
         return render_template('index.html', error_message = error)
 
     # 入力があった場合
