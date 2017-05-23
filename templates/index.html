@@ -7,55 +7,56 @@
     <title>home</title>
 </head>
 <body>
-    <br>
+    <div>
+        <br>
+        <h1>PSI研究室レコメンドシステム</h1><br>
 
-    <h1>PSI研究室レコメンドシステム</h1><br>
+        <h2>
 
-    <h2>
+        興味のある分野<br><br>
 
-    興味のある分野<br><br>
+        <button id = "add_input">追加</button>
+        <button id = "remove_input">削除</button><br><br>
 
-    <button id = "add_input">追加</button>
-    <button id = "remove_input">削除</button><br><br>
+        <form name = 'form' action='/recomend' method="post">
+            <input id="msg_form" type='text' name='message[]' value='システム'><br><br>
+            <div id="piyo"></div>
+            <input id ="submit_button" type='submit' name="summit" value = "検索" >
+        </form><br>
 
-    <form name = 'form' action='/recomend' method="post">
-        <input id="msg_form" type='text' name='message[]' value=''><br><br>
-        <div id="piyo"></div>
-        <input id ="submit_button" type='submit' name="summit" value = "検索" >
-    </form><br>
+        </h2>
 
-    </h2>
-
-    {% if error_message %}
-        {{ error_message }}
-    {% endif %}
+        {% if error_message %}
+            {{ error_message }}
+        {% endif %}
+    </div>
 
     <script>
-    var message_num = 1
+        var message_num = 1
 
-    // 入力欄を追加(最大5つ)
-    document.getElementById("add_input").onclick = function(){
-        if (message_num < 5){
-            message_num += 1
-            var div_element = document.createElement("div");
-            div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
-            var parent_object = document.getElementById("piyo");
-            parent_object.appendChild(div_element);
+        // 入力欄を追加(最大5つ)
+        document.getElementById("add_input").onclick = function(){
+            if (message_num < 5){
+                message_num += 1;
+                var div_element = document.createElement("div");
+                div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
+                var parent_object = document.getElementById("piyo");
+                parent_object.appendChild(div_element);
+            }
         }
-    }
 
-    // 入力欄を削除
-    document.getElementById("remove_input").onclick = function(){
-        if(message_num == 1){
-            return;
-        }else{
-            message_num -= 1
-            var div_element = document.createElement("div");
-            div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
-            var parent_object = document.getElementById("piyo");
-            parent_object.removeChild(parent_object.lastChild);
+        // 入力欄を削除
+        document.getElementById("remove_input").onclick = function(){
+            if(message_num == 1){
+                return;
+            }else{
+                message_num -= 1;
+                var div_element = document.createElement("div");
+                div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
+                var parent_object = document.getElementById("piyo");
+                parent_object.removeChild(parent_object.lastChild);
+            }
         }
-    }
     </script>
 </body>
 </html>

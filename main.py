@@ -9,6 +9,7 @@ import sqlite3
 from contextlib import closing
 import numpy as np
 import MeCab
+import difflib
 
 
 # 各種設定
@@ -50,9 +51,11 @@ def teardown_request(exception):
         db.close()
 
 
+# リストの初期化
+url_list = [] # 例：'aichi.html'
+name_list = [] # 例："愛知 正温 講師"
+
 # 教員のname_list, url_listを作成
-url_list = []
-name_list = []
 original_url = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/index.html"
 html_index = urllib.request.urlopen(original_url)
 soup_index = bs4.BeautifulSoup(html_index.read(),"lxml")
@@ -61,7 +64,6 @@ a_tag_list = a_tag_all[2:-1] # スライスで該当箇所のみ抽出
 for a_tag in a_tag_list:
     url_list.append(a_tag.attrs['href'])
     name_list.append(a_tag.string)
-
 
 # トップページ
 @app.route("/")
@@ -81,15 +83,18 @@ def db_insert():
         # 各教師のループ
         for teacher_index in range(len(name_list)):
 
-            contents_list = [] # レコードとして使用
-            titles_list = [] # 見出しリスト
+            # レコードを準備
+            contents_list = []
 
             # 教員名をレコードに追加
+            contents_list.append(name_list[teacher_index])
+
+            # タイトルリストを作成
+            titles_list = [] # 見出しリスト
             url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
             html_name = urllib.request.urlopen(url_text)
             soup_name = BeautifulSoup(html_name,"lxml")
             titles_list = soup_name.find_all("th")
-            contents_list.append(name_list[teacher_index])
 
             # キーワードが含まれそうな文章を結合
             sentences = ""
@@ -122,6 +127,10 @@ def db_insert():
                 else:
                     keyword_list.append(noun_list[index])
 
+
+            # tf値を使ってどの研究室にも共通するようなキーワードを排除(手付かず)
+
+
             # キーワードと出現回数をディクショナリに保存
             keyword_count = {}
             for keyword in keyword_list:
@@ -137,12 +146,6 @@ def db_insert():
 
             # キーワードをレコードに追加．
             contents_list.append(keywords)
-
-
-            # 画像をレコードに追加(手つかず)
-
-
-
 
             # レコードをDBに追加
             g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
@@ -172,8 +175,10 @@ def delete():
 # レコメンド
 @app.route("/recomend", methods=['POST'])
 def recomend():
+
     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
-    message_list  = request.form.getlist("message[]")
+
+    message_list  = request.form.getlist("message[]") # ユーザーからの入力が配列として格納される
 
     # 入力がない場合は入力を促す
     if message_list[0] == "":
@@ -182,47 +187,51 @@ def recomend():
 
     # 入力があった場合
     else:
-        # DBから抽出するための準備
-        cur = g.db.execute('select name, keywords from teachers')
-        keyword_array = [dict(name=row[0], keywords=row[1]) for row in cur.fetchall()]
 
-        suggest1=[]
-        suggest2=[]
-        suggest3=[]
-        recommend=[]
+        score_list = [] # 各教員のキーワードとの類似度
 
-        for message_index in range(len(message_list)):
-            message = message_list[message_index]
-            for teacher_index in range(len(url_list)):
-                link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
-                sentences = keyword_array[teacher_index]["keywords"] # キーワードを抽出
-                if message in sentences:
-                    suggest1.append(link)
+        # 教員ごとのscoreを計算
+        for teacher_index in range(len(name_list)):
 
-        suggest1_set = set(suggest1)
-        suggest2_set = set(suggest2)
-        suggest3 = list(suggest1_set ^ suggest2_set)
-        recommend = list(suggest1_set & suggest2_set)
+            score = 0 # 類似度の平均
+            similarity_total = 0 # 類似度の合計
+            count_total = 0
 
-        #まずmessage1かつmessage2が入っているurlを入れる
-        for i in range(len(suggest3)):
-            recommend.append(suggest3[i])
+            # DBからキーワード文全体を抽出
+            cur = g.db.execute('select name, keywords from teachers')
+            table = [dict(name=row[0],keywords=row[1]) for row in cur.fetchall()]
+            sentences = table[teacher_index]["keywords"]
 
-        #recommendが少なくとも２つ要素を持つようにチンパンジーの画像で調整
-        if len(recommend) ==0:
-            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
-            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
-        if len(recommend)==1:
-            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+            # キーワード文からキーワードと出現回数を単語ごとに抽出
+            keyword_count_list = sentences.split(" ")
+
+            # キーワードごとのループ
+            for keyword_count in keyword_count_list:
+                if(len(keyword_count.split(":")) == 2):
+                    keyword = keyword_count.split(":")[0]
+                    count = int(keyword_count.split(":")[1])
+                    count_total += count
+
+                # ユーザーからのメッセージごとのループ
+                for message in message_list:
+                    similarity = difflib.SequenceMatcher(None, message, keyword).ratio()
+                    similarity_total += similarity * count
+
+            score = similarity_total / count_total
+
+            score_list.append(score)
+
+        # レコメンドする研究室のインデックスを取得
+        score_array = np.array(score_list)
+        recomend_index1 = score_array.argsort()[::-1][0]
+        recomend_index2 = score_array.argsort()[::-1][1]
 
         return render_template(
             'result.html',
-            # user=user,
             message = message_list,
-            url1 = recommend[0],
-            url2 = recommend[1]
+            url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index1],
+            url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2]
         )
-
 
 # アプリ起動
 if __name__ == "__main__":
