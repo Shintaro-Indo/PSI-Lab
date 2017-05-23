@@ -48,7 +48,6 @@ input#add_form:hover {
 	color: #000000;
 }
 
-
 table {
   /*align: center; ←これはhtmlに直接書き込まないと無効だった*/
   border-collapse:collapse;

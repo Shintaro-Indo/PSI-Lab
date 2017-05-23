@@ -9,26 +9,31 @@
 <body>
     <br>
 
-    <h1>PSI研究室レコメンドシステム</h1><br><br>
+    <h1>PSI研究室レコメンドシステム</h1><br>
 
     <h2>
+
+    興味のある分野<br><br>
+
+    <button id = "add_input">追加</button>
+    <button id = "remove_input">削除</button><br><br>
+
     <form name = 'form' action='/recomend' method="post">
-        名前<br>
-        <input id="name_form" type='text' name='user' value='青山'><br><br>
-        興味のある分野<br><br>
         <input id="msg_form" type='text' name='message[]' value=''><br><br>
         <div id="piyo"></div>
         <input id ="submit_button" type='submit' name="summit" value = "検索" >
     </form><br>
 
-    <button id = "add_input">追加</button><br><br>
-    <button id = "remove_input">削除</button><br><br>
     </h2>
+
+    {% if error_message %}
+        {{ error_message }}
+    {% endif %}
 
     <script>
     var message_num = 1
-    // 入力欄を追加(最大5つ)
 
+    // 入力欄を追加(最大5つ)
     document.getElementById("add_input").onclick = function(){
         message_num += 1
         if (message_num <= 5){

@@ -173,51 +173,56 @@ def delete():
 @app.route("/recomend", methods=['POST'])
 def recomend():
     url = "http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg"
-    user = request.form["user"]
     message_list  = request.form.getlist("message[]")
-    # message1 = message_list[0]
-    # message2 = message_list[1]
 
-    # DBから抽出するための準備
-    cur = g.db.execute('select name, keywords from teachers')
-    keyword_array = [dict(name=row[0], keywords=row[1]) for row in cur.fetchall()]
+    # 入力がない場合は入力を促す
+    if message_list[0] == "":
+        error = "興味のある分野を入力してください"
 
-    suggest1=[]
-    suggest2=[]
-    suggest3=[]
-    recommend=[]
+        return render_template('index.html', error_message = error)
 
-    for message_index in range(len(message_list)):
-        message = message_list[message_index]
-        for teacher_index in range(len(url_list)):
-            link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
-            sentences = keyword_array[teacher_index]["keywords"] # キーワードを抽出
-            if message in sentences:
-                suggest1.append(link)
-                
-    suggest1_set = set(suggest1)
-    suggest2_set = set(suggest2)
-    suggest3 = list(suggest1_set ^ suggest2_set)
-    recommend = list(suggest1_set & suggest2_set)
+    # 入力があった場合
+    else:
+        # DBから抽出するための準備
+        cur = g.db.execute('select name, keywords from teachers')
+        keyword_array = [dict(name=row[0], keywords=row[1]) for row in cur.fetchall()]
 
-    #まずmessage1かつmessage2が入っているurlを入れる
-    for i in range(len(suggest3)):
-        recommend.append(suggest3[i])
+        suggest1=[]
+        suggest2=[]
+        suggest3=[]
+        recommend=[]
 
-    #recommendが少なくとも２つ要素を持つようにチンパンジーの画像で調整
-    if len(recommend) ==0:
-        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
-        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
-    if len(recommend)==1:
-        recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+        for message_index in range(len(message_list)):
+            message = message_list[message_index]
+            for teacher_index in range(len(url_list)):
+                link = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
+                sentences = keyword_array[teacher_index]["keywords"] # キーワードを抽出
+                if message in sentences:
+                    suggest1.append(link)
 
-    # message_list = []
-    # message_list.append(message1)
-    # if message2:
-    #     message_list.append(message2)
-    return render_template('result.html', user=user,
-    message = message_list,
-    url1 = recommend[0], url2 = recommend[1])
+        suggest1_set = set(suggest1)
+        suggest2_set = set(suggest2)
+        suggest3 = list(suggest1_set ^ suggest2_set)
+        recommend = list(suggest1_set & suggest2_set)
+
+        #まずmessage1かつmessage2が入っているurlを入れる
+        for i in range(len(suggest3)):
+            recommend.append(suggest3[i])
+
+        #recommendが少なくとも２つ要素を持つようにチンパンジーの画像で調整
+        if len(recommend) ==0:
+            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+        if len(recommend)==1:
+            recommend.append("http://livedoor.4.blogimg.jp/laba_q/imgs/b/d/bd0839ac.jpg")
+
+        return render_template(
+            'result.html',
+            # user=user,
+            message = message_list,
+            url1 = recommend[0],
+            url2 = recommend[1]
+        )
 
 
 # アプリ起動
