@@ -9,11 +9,13 @@
 <body>
     <br>
     <!-- <p>  {{ message[0] }} {{ message[1] }} {{ message[2] }} {{ message[3] }} {{  message[4] }}に興味があるあなたにおすすめの専攻を紹介します </p> -->
-    <h1> 写真をクリック！<br><br>
-    <a href = "{{url1}}" ><div class = "center"><img src = "{{img_url1}}"  width="120" height="150"></div></a><br>
-    <a href = "{{url2}}" ><div class = "center"><img src = "{{img_url2}}"  width="120" height="150"></div></a><br>
-    <a href = "{{url3}}" ><div class = "center"><img src = "{{img_url3}}"  width="120" height="150"></div></a><br>
-    <a href="{{ url_for('index') }}">戻る</a><br> <!--このindexは関数名!-->
-    </h1>
+    <h1> 写真をクリック！</h1>
+    <br>
+    <a href = "{{url1}}" ><div class = "center"><img src = "{{img_url1}}"  width="104" height="130"></div></a><br><br>
+    <a href = "{{url2}}" ><div class = "center"><img src = "{{img_url2}}"  width="104" height="130"></div></a><br><br>
+    <a href = "{{url3}}" ><div class = "center"><img src = "{{img_url3}}"  width="104" height="130"></div></a><br>
+    <h3><a href="{{ url_for('index') }}">戻る</a></h3>
+    <br> <!--このindexは関数名!-->
+
 </body>
 </html>
