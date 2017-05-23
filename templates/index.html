@@ -21,12 +21,14 @@
         <input id ="submit_button" type='submit' name="summit" value = "検索" >
     </form><br>
 
-    <button id = "add_input">入力欄を追加</button><br><br>
+    <button id = "add_input">追加</button><br><br>
+    <button id = "remove_input">削除</button><br><br>
     </h2>
 
     <script>
-    // 入力欄を追加(最大5つ)
     var message_num = 1
+    // 入力欄を追加(最大5つ)
+
     document.getElementById("add_input").onclick = function(){
         message_num += 1
         if (message_num <= 5){
@@ -34,6 +36,18 @@
             div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
             var parent_object = document.getElementById("piyo");
             parent_object.appendChild(div_element);
+        }
+    }
+
+    // 入力欄を削除
+    document.getElementById("remove_input").onclick = function(){
+        if(message_num == 1){
+            return;
+        }else{
+            var div_element = document.createElement("div");
+            div_element.innerHTML = "<input id= 'msg_form' type='text' name='message[]' value=''><br><br>";
+            var parent_object = document.getElementById("piyo");
+            parent_object.removeChild(parent_object.lastChild);
         }
     }
     </script>
