@@ -117,7 +117,7 @@ def db_insert():
             # sentencesをMeCabを使って形態素解析
 
             tagger = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd') # mecab-ipadic-NEologd
-            # tagger = MeCab.Tagger() #　デフォルトの辞書バージョン
+            # tagger = MeCab.Tagger() #　デフォルトの辞書(mecab-ipadic-NEologd)バージョン
             tagger.parse('')  # これを追記することでUnicodeError解決
             node = tagger.parseToNode(sentences)
 
