@@ -253,7 +253,10 @@ def recomend():
             url3 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index3],
             img_url1 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index1],
             img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index2],
-            img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3]
+            img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3],
+            name1 = name_list[recomend_index1],
+            name2 = name_list[recomend_index2],
+            name3 = name_list[recomend_index3]
         )
 
 # アプリ起動
