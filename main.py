@@ -187,7 +187,6 @@ def recomend():
 
     # 入力があった場合
     else:
-
         score_list = [] # 各教員のキーワードとの類似度
 
         # 教員ごとのscoreを計算
@@ -205,19 +204,25 @@ def recomend():
             # キーワード文からキーワードと出現回数を単語ごとに抽出
             keyword_count_list = sentences.split(" ")
 
-            # キーワードごとのループ
-            for keyword_count in keyword_count_list:
-                if(len(keyword_count.split(":")) == 2):
-                    keyword = keyword_count.split(":")[0]
-                    count = int(keyword_count.split(":")[1])
-                    count_total += count
+            # ユーザーからのメッセージごとのループ
+            for message in message_list:
 
-                # ユーザーからのメッセージごとのループ
-                for message in message_list:
-                    similarity = difflib.SequenceMatcher(None, message, keyword).ratio()
-                    similarity_total += similarity * count
+                # 一致判定
+                score += sentences.count(message)
 
-            score = similarity_total / count_total
+                # キーワードごとのループ
+                for keyword_count in keyword_count_list:
+                    if len(keyword_count.split(":")) == 2:
+                        keyword = keyword_count.split(":")[0]
+                        count = int(keyword_count.split(":")[1])
+                        count_total += count
+                        similarity = difflib.SequenceMatcher(None, message, keyword).ratio() * count # 類似度
+                        similarity_total += similarity * count
+
+                score += difflib.SequenceMatcher(None, message, keyword).ratio() / count_total
+
+
+            # score = similarity_total / count_total
 
             score_list.append(score)
 
@@ -230,7 +235,7 @@ def recomend():
             'result.html',
             message = message_list,
             url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index1],
-            url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2]
+            url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2],
         )
 
 # アプリ起動
