@@ -1,6 +1,17 @@
 body{
   text-align: center;
   background-color:#DDDDDD;
+  background-image:url("https://static.pexels.com/photos/24027/pexels-photo-24027.jpg");
+  background-position: center center;
+
+  /* 画像をタイル状に繰り返し表示しない */
+  background-repeat: no-repeat;
+
+  /* コンテンツの高さが画像の高さより大きい時、動かないように固定 */
+  background-attachment: fixed;
+
+  /* 表示するコンテナの大きさに基づいて、背景画像を調整 */
+  background-size: cover;
 }
 
 input {
@@ -9,14 +20,38 @@ input {
 h1{
   font-size: 18px;
   text-align: center;
+  color:white;
 }
 h2{
+  color:white;
   font-size: 15px;
 }
 
 .center{
   text^align: center;
 }
+h1{
+font-family: 'Vidaloka', serif;
+text-align:center;
+font-weight:normal;
+color:white;
+
+}
+.maintitle{
+display:block;
+font-size:80px;
+line-height:80px;
+letter-spacing:-4px;
+text-shadow:3px 3px 6px #888;
+}
+.description{
+display:block;
+font-size:24px;
+line-height:10px;
+letter-spacing:1px;
+text-shadow:5px 5px 10px #888;
+}
+
 input#name_form{
   padding: 0.3em;
   border:solid 1px #F0FFFF;
@@ -69,13 +104,4 @@ table, th, td {
 #keywords{
   padding: 10px 0px;
   text-align: center justify;
-}
-
-#insert{
-  float:left;
-  margin-left:45%;
-}
-#delete{
-  float:left;
-  margin-left:20px;
 }

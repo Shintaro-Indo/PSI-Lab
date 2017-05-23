@@ -115,7 +115,9 @@ def db_insert():
                     sentences += content.get_text() # テキストを取得するにはget_text()が.stringよりも便利．
 
             # sentencesをMeCabを使って形態素解析
-            tagger = MeCab.Tagger()
+
+            tagger = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd') # mecab-ipadic-NEologd
+            # tagger = MeCab.Tagger() #　デフォルトの辞書バージョン
             tagger.parse('')  # これを追記することでUnicodeError解決
             node = tagger.parseToNode(sentences)
 
@@ -152,7 +154,7 @@ def db_insert():
             # 出現回数が三回以上のキーワードを一文にまとめる．
             keywords = ""
             for word, count in keyword_count:
-                if count >= 3:
+                if count >= 2:
                     keywords += word + ":" + str(count) + " "
 
             # キーワードをレコードに追加．
@@ -172,7 +174,7 @@ def db_show():
     cur = g.db.execute('select name, keywords from teachers')
     table = [dict(name=row[0],keywords=row[1]) for row in cur.fetchall()]
 
-    return render_template('show_data.html', teachers_table = table)
+    return render_template('db.html', teachers_table = table)
 
 
 # データ削除
