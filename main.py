@@ -115,7 +115,6 @@ def db_insert():
                     sentences += content.get_text() # テキストを取得するにはget_text()が.stringよりも便利．
 
             # sentencesをMeCabを使って形態素解析
-
             tagger = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd') # mecab-ipadic-NEologd
             # tagger = MeCab.Tagger() #　デフォルトの辞書(mecab-ipadic-NEologd)バージョン
             tagger.parse('')  # これを追記することでUnicodeError解決
@@ -135,7 +134,9 @@ def db_insert():
                 types = type_list[index].split(",")
                 if types[1] in [ u"代名詞", u"非自立", u"接尾", u"数", u"副詞可能"]:
                     pass
-                elif len(types) >= 7 and types[6]== "*":
+                elif len(types) >= 7 and types[6] == "*": # 記号を削除
+                    pass
+                elif noun_list[index] in [u"研究", u"研究室", u"科学", u"テーマ"]:
                     pass
                 else:
                     keyword_list.append(noun_list[index])
@@ -247,13 +248,17 @@ def recomend():
 
         return render_template(
             'result.html',
+
             message = message_list,
+
             url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index1],
             url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index2],
             url3 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recomend_index3],
+
             img_url1 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index1],
             img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index2],
             img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3],
+
             name1 = name_list[recomend_index1],
             name2 = name_list[recomend_index2],
             name3 = name_list[recomend_index3]
