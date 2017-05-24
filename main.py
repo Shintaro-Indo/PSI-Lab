@@ -68,7 +68,7 @@ for a_tag in a_tag_list:
 
 img_list = ["img/teach_aichi.jpg","img/teach_aoyama.jpg","img/teacher_abe.jpg",
             "img/teach_ihara.jpg","img/teach_ozaki.jpg","img/teach_kageyama.jpg",
-            "img/teach_kuriyama.jpg","img/teach_kuriyama.jpg","img/teach_shibanuma.png",
+            "img/teach_kuriyama.jpg","img/teach_sakata.jpg","img/teach_shibanuma.png",
             "img/teach_shirayama.jpg","img/teach_suzuki2.jpg","img/teach_f_takeda.jpg",
             "img/teach_tanaka2.jpg","img/teacher_nawata.jpg","img/teacher_nishino.jpg",
             "img/teacher_hiekata.jpg","img/teach_fujita.jpg","img/teach_matsuo.jpg",
