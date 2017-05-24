@@ -245,6 +245,31 @@ def recomend():
         recomend_index2 = score_array.argsort()[::-1][1]
         recomend_index3 = score_array.argsort()[::-1][2]
 
+
+        key1_list_ = []
+        str = table[recomend_index1]["keywords"].replace(':',' ')
+        key1_list_ = str.split(' ')
+        key1 = " "
+        for i in range(15):
+            key1 += key1_list_[i*2]
+            key1 += " "
+        key2_list_ = []
+        str = table[recomend_index2]["keywords"].replace(':',' ')
+        key2_list_ = str.split(' ')
+        key2 = " "
+        for i in range(15):
+            key2 += key2_list_[i*2]
+            key2 += " "
+        key3_list_ = []
+        str = table[recomend_index3]["keywords"].replace(':',' ')
+        key3_list_ = str.split(' ')
+        key3 = " "
+        for i in range(15):
+            key3 += key3_list_[i*2]
+            key3 += " "
+
+
+
         return render_template(
             'result.html',
             message = message_list,
@@ -256,7 +281,11 @@ def recomend():
             img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recomend_index3],
             name1 = name_list[recomend_index1],
             name2 = name_list[recomend_index2],
-            name3 = name_list[recomend_index3]
+            name3 = name_list[recomend_index3],
+            key1 = key1,
+            key2 = key2,
+            key3 = key3
+
         )
 
 # アプリ起動

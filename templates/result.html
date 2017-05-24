@@ -11,9 +11,37 @@
     <!-- <p>  {{ message[0] }} {{ message[1] }} {{ message[2] }} {{ message[3] }} {{  message[4] }}に興味があるあなたにおすすめの専攻を紹介します </p> -->
     <h1> 写真をクリック！</h1>
     <br>
-    <a href = "{{url1}}" ><div class = "center"><img src = "{{img_url1}}"  width="104" height="130">{{name1}}</div></a><br><br>
-    <a href = "{{url2}}" ><div class = "center"><img src = "{{img_url2}}"  width="104" height="130">{{name2}}</div></a><br><br>
-    <a href = "{{url3}}" ><div class = "center"><img src = "{{img_url3}}"  width="104" height="130">{{name3}}</div></a><br><br>
+    <div class="block">
+      <p class="ph">
+        <img src = "{{img_url1}}"  width="104" height="130">
+      </p>
+    <a href = "{{url1}}" >  <p class="name">{{name1}}</p>
+
+    </a>
+      {{key1}}
+  </div>
+    <br><br>
+
+    <div class="block">
+      <p class="ph">
+        <img src = "{{img_url2}}"  width="104" height="130">
+      </p>
+      <a href = "{{url2}}" ><p class="name">{{name2}}</p>
+    </a>
+    {{key2}}
+  </div>
+  <br><br>
+
+    <div class="block">
+      <p class="ph">
+        <img src = "{{img_url3}}"  width="104" height="130">
+      </p>
+      <a href = "{{url3}}" ><p class="name">{{name3}}</p>
+  </a>
+  {{key3}}
+</div>
+<br><br>
+
     <h3><a href="{{ url_for('index') }}">戻る</a></h3>
     <br> <!--このindexは関数名!-->
 
