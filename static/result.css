@@ -51,11 +51,6 @@ background-size: cover;
 
 }
 
-
-
-
-
-
 .maintitle{
 display:block;
 font-size:80px;
@@ -92,7 +87,7 @@ p.name{
 	font-size:1.5em;
 	line-height:1.2;
   margin-left: 100px;
-	color:#be0b00;
+	color:#0B6697;
 	}
 /*
 .block p.name span{
