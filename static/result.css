@@ -1,6 +1,6 @@
 body{
-  text-align: center;
-  background-color:#DDDDDD;
+
+  background-color:white;
 }
 /*.center{
   text^align: center;
@@ -38,19 +38,20 @@ letter-spacing:1px;
 text-shadow:5px 5px 10px #888;
 }
 
-#teachers .block{
-	padding:10px;
-	margin-bottom:15px;
+.block{
+	padding:40px;
+	margin-bottom:10px;
 	border:#e6e6e6 5px solid;
 	}
 
-#teachers .block .ph{
-	margin-bottom:10px;
+.block .ph{
+	margin-bottom:3px;
+  margin-top: :3px;
 	width:150px;
 	float:left;
 }
 
-#teachers .block p.name{
+.block p.name{
 	margin-bottom:5px;
 	font-weight:bold;
 	font-size:1.5em;
@@ -58,37 +59,37 @@ text-shadow:5px 5px 10px #888;
 	color:#be0b00;
 	}
 
-#teachers .block p.name span{
+.block p.name span{
 	padding-left:5px;
 	font-size:0.7em;
 }
 
-#teachers .block .prof01{
+/*.block .prof01{
 	overflow:hidden;
 }
-
-#teachers .block .prof01 dt{
+*/
+/*.block .prof01 dt{
  clear:left;
 	float:left;
 	border-top:#999 1px dotted;
 	padding:5px 0;
 	width:5em;
 	font-weight:bold;
-}
+}*/
 
-#teachers .block .prof01 dd{
+/*.block .prof01 dd{
 	border-top:#999 1px dotted;
 	padding:5px 0;
 	margin-left:5em;
 }
 
-#teachers .block .prof02{
+.block .prof02{
 	clear:both;
 }
 
-#teachers .block .prof02 dt{
+.block .prof02 dt{
 	border-bottom:#999 1px dotted;
 	margin-top:15px;
 	margin-bottom:5px;
 	font-weight:bold;
-	}
+	}*/
