@@ -2,6 +2,93 @@ body{
   text-align: center;
   background-color:#DDDDDD;
 }
-.center{
+/*.center{
   text^align: center;
+}*/
+h1{
+font-family: 'Vidaloka', serif;
+text-align:center;
+font-weight:normal;
+color:white;
+background-image:url("https://static.pexels.com/photos/24027/pexels-photo-24027.jpg");
+background-position: center center;
+
+/* 画像をタイル状に繰り返し表示しない */
+background-repeat: no-repeat;
+
+/* コンテンツの高さが画像の高さより大きい時、動かないように固定 */
+background-attachment: fixed;
+
+/* 表示するコンテナの大きさに基づいて、背景画像を調整 */
+background-size: cover;
+
 }
+.maintitle{
+display:block;
+font-size:80px;
+line-height:80px;
+letter-spacing:-4px;
+text-shadow:3px 3px 6px #888;
+}
+.description{
+display:block;
+font-size:24px;
+line-height:10px;
+letter-spacing:1px;
+text-shadow:5px 5px 10px #888;
+}
+
+#teachers .block{
+	padding:10px;
+	margin-bottom:15px;
+	border:#e6e6e6 5px solid;
+	}
+
+#teachers .block .ph{
+	margin-bottom:10px;
+	width:150px;
+	float:left;
+}
+
+#teachers .block p.name{
+	margin-bottom:5px;
+	font-weight:bold;
+	font-size:1.5em;
+	line-height:1.2;
+	color:#be0b00;
+	}
+
+#teachers .block p.name span{
+	padding-left:5px;
+	font-size:0.7em;
+}
+
+#teachers .block .prof01{
+	overflow:hidden;
+}
+
+#teachers .block .prof01 dt{
+ clear:left;
+	float:left;
+	border-top:#999 1px dotted;
+	padding:5px 0;
+	width:5em;
+	font-weight:bold;
+}
+
+#teachers .block .prof01 dd{
+	border-top:#999 1px dotted;
+	padding:5px 0;
+	margin-left:5em;
+}
+
+#teachers .block .prof02{
+	clear:both;
+}
+
+#teachers .block .prof02 dt{
+	border-bottom:#999 1px dotted;
+	margin-top:15px;
+	margin-bottom:5px;
+	font-weight:bold;
+	}
