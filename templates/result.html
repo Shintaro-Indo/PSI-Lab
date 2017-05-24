@@ -7,14 +7,58 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
 </head>
 <body>
-    <br>
-    <!-- <p>  {{ message[0] }} {{ message[1] }} {{ message[2] }} {{ message[3] }} {{  message[4] }}に興味があるあなたにおすすめの専攻を紹介します </p> -->
+  <h1>
+    </h1>
+
     <h3> 写真をクリック！</h3>
     <br>
-    <a href = "{{url1}}" ><div class = "center"><img src = "{{img_url1}}"  width="104" height="130">{{name1}}</div></a><br><br>
-    <a href = "{{url2}}" ><div class = "center"><img src = "{{img_url2}}"  width="104" height="130">{{name2}}</div></a><br><br>
-    <a href = "{{url3}}" ><div class = "center"><img src = "{{img_url3}}"  width="104" height="130">{{name3}}</div></a><br>
+
+    <div class = "parent">
+        <div class = "child1">
+            <a href = "{{url1}}" ><img src = "{{img_url1}}"  width="104" height="130"></a>
+        </div>
+        <div class = "child2">
+            <h2>{{ row1.name}}</h2>
+            所属：{{ row1.affiliation }}<br>
+            専門分野：{{ row1.specialized_field }}<br>
+            研究テーマ：{{ row1.research_theme }}<br>
+        </div>
+    </div>
+    <br>
+    <br>
+
+
+    <div class = "parent">
+        <div class = "child1">
+            <a href = "{{url2}}" ><img src = "{{img_url2}}"  width="104" height="130"></a>
+        </div>
+        <div class = "child2">
+            <h2>{{ row2.name}}</h2>
+            所属：{{ row2.affiliation }}<br>
+            専門分野：{{ row2.specialized_field }}<br>
+            研究テーマ：{{ row2.research_theme }}<br>
+        </div>
+    </div>
+    <br>
+    <br>
+
+
+    <div class = "parent">
+        <div class = "child1">
+            <a href = "{{url3}}" ><img src = "{{img_url3}}"  width="104" height="130"></a>
+        </div>
+        <div class = "child3">
+            <h2>{{ row3.name}}</h2>
+            所属：{{ row3.affiliation }}<br>
+            専門分野：{{ row3.specialized_field }}<br>
+            研究テーマ：{{ row3.research_theme }}<br>
+        </div>
+    </div>
+    <br>
+
     <h4><a href="{{ url_for('index') }}">戻る</a></h4>
+
+
     <br> <!--このindexは関数名!-->
 
 </body>

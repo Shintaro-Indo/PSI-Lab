@@ -81,7 +81,7 @@ div_list += div_all[22:]
 
 img_list = ["img/teach_aichi.jpg","img/teach_aoyama.jpg","img/teacher_abe.jpg",
             "img/teach_ihara.jpg","img/teach_ozaki.jpg","img/teach_kageyama.jpg",
-            "img/teach_kuriyama.jpg","img/teach_kuriyama.jpg","img/teach_shibanuma.png",
+            "img/teach_kuriyama.jpg","img/teach_sakata.jpg","img/teach_shibanuma.png",
             "img/teach_shirayama.jpg","img/teach_suzuki2.jpg","img/teach_f_takeda.jpg",
             "img/teach_tanaka2.jpg","img/teacher_nawata.jpg","img/teacher_nishino.jpg",
             "img/teacher_hiekata.jpg","img/teach_fujita.jpg","img/teach_matsuo.jpg",
@@ -305,10 +305,26 @@ def recommend():
         recommend_index2 = score_array.argsort()[::-1][1]
         recommend_index3 = score_array.argsort()[::-1][2]
 
+        cur = g.db.execute('select name, affiliation, specialized_field, research_theme, number_of_people, place, keywords from teachers')
+        table = [dict(name=row[0], affiliation=row[1], specialized_field=row[2], research_theme=row[3], number_of_people=row[4], place=row[5], keywords=row[6]) for row in cur.fetchall()]
+
+        row_index = 0
+        row1 = {}
+        row2 = {}
+        row3 = {}
+
+        for row in table:
+            if row_index == recommend_index1:
+                row1 = row
+            elif row_index == recommend_index2:
+                row2 = row
+            if row_index == recommend_index3:
+                row3 = row
+            row_index += 1
+
+
         return render_template(
             'result.html',
-
-            message = message_list,
 
             url1 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recommend_index1],
             url2 = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[recommend_index2],
@@ -318,9 +334,9 @@ def recommend():
             img_url2 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recommend_index2],
             img_url3 = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/"+ img_list[recommend_index3],
 
-            name1 = name_list[recommend_index1],
-            name2 = name_list[recommend_index2],
-            name3 = name_list[recommend_index3]
+            row1 = row1,
+            row2 = row2,
+            row3 = row3
         )
 
 # アプリ起動
