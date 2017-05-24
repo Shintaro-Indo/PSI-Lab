@@ -32,7 +32,7 @@ def connect_db():
 # DB初期化関数
 def init_db():
     with closing(connect_db()) as db:
-        with app.open_resource("test.sql", mode="r") as f:
+        with app.open_resource("main.sql", mode="r") as f:
             db.cursor().executescript(f.read())
         db.commit()
 
@@ -66,6 +66,19 @@ for a_tag in a_tag_list:
     name_list.append(a_tag.string)
 
 
+# 名前，　所属， 専門分野を格納するための準備
+url_index = "http://www.si.t.u-tokyo.ac.jp/psi/teachers/index.html" # 教員紹介ページ
+html_result = urllib.request.urlopen(url_index)
+soup_result = BeautifulSoup(html_result,"lxml")
+div_all = soup_result.find_all("div", class_="block") # 全教員のdiv
+
+# 卒論にない合田 隆 准教授(7), 柴崎 隆一 准教授(9) 宮本 英昭 教授(21) を削除．
+div_list = div_all[0:7]
+div_list.append(div_all[8])
+div_list += div_all[10:21]
+div_list += div_all[22:]
+
+
 img_list = ["img/teach_aichi.jpg","img/teach_aoyama.jpg","img/teacher_abe.jpg",
             "img/teach_ihara.jpg","img/teach_ozaki.jpg","img/teach_kageyama.jpg",
             "img/teach_kuriyama.jpg","img/teach_kuriyama.jpg","img/teach_shibanuma.png",
@@ -82,7 +95,7 @@ def index():
     return render_template('index.html')
 
 
-# DBに挿入
+# DBに挿入 ((名前，所属，専門分野),(研究テーマ，キーワード))
 @app.route("/insert", methods=['POST'])
 def db_insert():
 
@@ -100,12 +113,62 @@ def db_insert():
             # 教員名をレコードに追加
             contents_list.append(name_list[teacher_index])
 
+            # 所属と専門分野(両者ともdt)
+
+            div = div_list[teacher_index]
+            dt_list = div.find_all("dt")
+
+            for dt in dt_list:
+
+                # 所属，
+                if (dt.string == "所属"):
+                    dd = dt.nextSibling.nextSibling # nextSibling：同階層の次の要素にアクセス． 挙動が謎．．．．．．
+                    affiliation = dd.find("a").string
+                    contents_list.append(affiliation)
+
+                # 専門分野
+                elif (dt.string == "専門分野"):
+                    if teacher_index == 16: # 藤田先生
+                        dd = dt.nextSibling.nextSibling # 中身がある場合はまず中身を見て，次に隣の要素？
+                        contents_list.append(dd.string)
+                    else:
+                        ul = dt.nextSibling.nextSibling # nextSibling：同階層の次の要素にアクセス． 挙動が謎．．．．．．
+                        li_list = ul.find_all("li")
+                        specialized_field_list = [li.get_text().replace('・', '') for li in li_list]
+                        specialized_field = ""
+                        for word in specialized_field_list:
+                            specialized_field += word + " "
+                        contents_list.append(specialized_field)
+
+
+            # 研究テーマ，実施場所，人数，キーワード
+
             # タイトルリストを作成
             titles_list = [] # 見出しリスト
             url_text = "http://www.si.t.u-tokyo.ac.jp/psi/thesis/thesis16/" + url_list[teacher_index]
             html_name = urllib.request.urlopen(url_text)
             soup_name = BeautifulSoup(html_name,"lxml")
             titles_list = soup_name.find_all("th")
+
+
+            # 研究テーマ，人数，実施場所
+            # research_theme = ""
+            # number_of_people = ""
+            # place = ""
+
+            for title in titles_list:
+                content = title.nextSibling.nextSibling
+                if title.string == u"研究テーマ":
+                    contents_list.append(content.get_text())
+
+                elif title.string == u"標準受入人数":
+                    contents_list.append(content.get_text())
+
+                elif title.string == u"実施場所":
+                    contents_list.append(content.get_text())
+
+
+            # キーワード
 
             # キーワードが含まれそうな文章を結合
             sentences = ""
@@ -141,10 +204,6 @@ def db_insert():
                 else:
                     keyword_list.append(noun_list[index])
 
-
-            # tf値を使ってどの研究室にも共通するようなキーワードを排除(手付かず)
-
-
             # キーワードと出現回数をディクショナリに保存
             keyword_count = {}
             for keyword in keyword_list:
@@ -162,7 +221,7 @@ def db_insert():
             contents_list.append(keywords)
 
             # レコードをDBに追加
-            g.db.execute('insert into teachers (name, keywords) values(?,?)',[content for content in contents_list])
+            g.db.execute('insert into teachers (name, affiliation, specialized_field, research_theme, number_of_people, place, keywords) values(?, ?, ?, ?, ?, ?, ?)',[content for content in contents_list])
             g.db.commit()
 
     return redirect(url_for('db_show')) # リダイレクトは関数名を指定
@@ -172,8 +231,8 @@ def db_insert():
 @app.route("/db")
 def db_show():
     # 抽出
-    cur = g.db.execute('select name, keywords from teachers')
-    table = [dict(name=row[0],keywords=row[1]) for row in cur.fetchall()]
+    cur = g.db.execute('select name, affiliation, specialized_field, research_theme, number_of_people, place, keywords from teachers') # ここ忘れがち．．
+    table = [dict(name=row[0], affiliation=row[1], specialized_field=row[2], research_theme=row[3], number_of_people=row[4], place=row[5], keywords=row[6]) for row in cur.fetchall()]
 
     return render_template('db.html', teachers_table = table)
 
@@ -211,8 +270,8 @@ def recommend():
             count_total = 0
 
             # DBからキーワード文全体を抽出
-            cur = g.db.execute('select name, keywords from teachers')
-            table = [dict(name=row[0],keywords=row[1]) for row in cur.fetchall()]
+            cur = g.db.execute('select name, affiliation, specialized_field, research_theme, number_of_people, place, keywords from teachers')
+            table = [dict(name=row[0], affiliation=row[1], specialized_field=row[2], research_theme=row[3], number_of_people = row[4], place=row[5],keywords=row[6]) for row in cur.fetchall()]
             sentences = table[teacher_index]["keywords"]
 
             # キーワード文からキーワードと出現回数を単語ごとに抽出

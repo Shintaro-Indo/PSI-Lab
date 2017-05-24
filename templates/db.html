@@ -3,28 +3,11 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>データ確認</title>
+    <title>DB</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='db.css') }}">
 </head>
 <body>
     <br>
-
-    <table>
-        <tr>
-            <th width="15">教員名</th>
-            <th id = "keywords" width="985">キーワード</th>
-    　   </tr>
-
-        {% for row in teachers_table %}
-        <tr>
-            <td>{{ row.name }}</td>
-            <td>{{ row.keywords }}</td>
-        <tr>
-        {% endfor %}
-    </table>
-    <br>
-    <br>
-
 
     <form action="{{ url_for('db_insert') }}" method="post" id = "insert">
         <input type="submit" value="Insert data">
@@ -33,6 +16,37 @@
     <form action="{{ url_for('delete') }}" method="post" id="delete">
         <input type="submit" value="Clear all data">
     </form>
+
+    <br>
+
+    <table>
+        <tr>
+            <th width="15">教員名</th>
+            <th width="40">所属</th>
+            <th width="50">専門分野</th>
+            <th width="100">研究テーマ</th>
+            <th width="15">人数</th>
+            <th width="55">実施場所</th>
+            <th id = "keywords" width="525">キーワード</th>
+    　   </tr>
+
+        {% for row in teachers_table %}
+        <tr>
+            <td>{{ row.name }}</td>
+            <td>{{ row.affiliation }}</td>
+            <td>{{ row.specialized_field }}</td>
+            <td>{{ row.research_theme }}</td>
+            <td>{{ row.number_of_people }}</td>
+            <td>{{ row.place }}</td>
+            <td>{{ row.keywords }}</td>
+        <tr>
+        {% endfor %}
+    </table>
+    <br>
+    <br>
+
+
+
 
     <br>
     <br>

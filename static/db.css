@@ -7,9 +7,9 @@ body{
 table {
   /*align: center; ←これはhtmlに直接書き込まないと無効だった*/
   border-collapse:collapse;
-  width:1000px;
+  width:800px;
   table-layout: fixed;
-  margin:0 auto;
+  margin: auto;
   text-align: center justify;
 }
 
