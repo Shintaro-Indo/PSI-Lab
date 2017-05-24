@@ -8,11 +8,13 @@ body{
 }
 .child1 {
   float: left;
-  width: 200px;
-  margin-left: 200px;
+  width: 100px;
+  margin-left: 70px;
+  margin-top: 50px;
 }
 .child2 {
   float: left;
+  margin-left: 1px;
   width: 500px;
   text-align: left;
 }
@@ -70,10 +72,10 @@ text-shadow:5px 5px 10px #888;
 }
 
 .parent{
-	padding:40px;
+	padding:10px;
 	margin-bottom:10px;
-  margin-left: 180px;
-  margin-right: 150px;
+  margin-left: 250px;
+  margin-right: 180px;
 	border:#e6e6e6 5px solid;
 	}
 
@@ -83,15 +85,16 @@ text-shadow:5px 5px 10px #888;
 	width:150px;
 	float:left;
 }
-/*
-.block p.name{
+
+p.name{
 	margin-bottom:5px;
 	font-weight:bold;
 	font-size:1.5em;
 	line-height:1.2;
+  margin-left: 100px;
 	color:#be0b00;
 	}
-
+/*
 .block p.name span{
 	padding-left:5px;
 	font-size:0.7em;
@@ -110,12 +113,12 @@ text-shadow:5px 5px 10px #888;
 	font-weight:bold;
 }*/
 
-/*.block .prof01 dd{
+dd{
 	border-top:#999 1px dotted;
 	padding:5px 0;
 	margin-left:5em;
 }
-
+/*
 .block .prof02{
 	clear:both;
 }
