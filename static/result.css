@@ -3,6 +3,7 @@ body{
   background-color:white;
 }
 
+
 h3{
   text-align: center;
 }
@@ -11,12 +12,11 @@ h4{
   text-align: center;
 }
 
-dd{
-	border-top:#999 1px dotted;
-	padding:5px 0;
-	margin-left:5em;
-}
+/*＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿*/
 
+/*.center{
+  text^align: center;
+}*/
 h1{
 font-family: 'Vidaloka', serif;
 text-align:center;
@@ -43,7 +43,6 @@ line-height:80px;
 letter-spacing:-4px;
 text-shadow:3px 3px 6px #888;
 }
-
 .description{
 display:block;
 font-size:24px;
@@ -52,28 +51,27 @@ letter-spacing:1px;
 text-shadow:5px 5px 10px #888;
 }
 
+.child1 {
+
+  margin-top: 20px;
+  margin-bottom:3px;
+  margin-top: :20px;
+  margin-left: 30px;
+	width:75px;
+	float:left;
+}
+
 .parent{
   overflow: hidden;
 	padding:10px;
-	margin-bottom:10px;
+	margin-bottom:20px;
   margin-left: 100px;
   margin-right: 100px;
 	border:#e6e6e6 5px solid;
 	}
 
-
-.parent .child1{
-	margin-bottom:3px;
-  margin-top: :50px;
-  margin-left: 75px;
-	width:100px;
-	float:left;
-}
-
 .child2 {
   float: left;
-  margin-left: 0px;
-  margin-top: 0px;
   width: 800px;
   text-align: left;
 }
@@ -86,3 +84,10 @@ p.name{
   margin-left: 80px;
 	color:#0B6697;
 	}
+
+
+dd{
+	border-top:#999 1px dotted;
+	padding:5px 0;
+	margin-left:5em;
+}
