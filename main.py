@@ -206,10 +206,10 @@ def db_insert():
                 keyword_count[keyword] += 1
             keyword_count = sorted(keyword_count.items(),key=lambda x:x[1],reverse=True) # 出現回数が多い順に並び替え
 
-            # 出現回数が三回以上のキーワードを一文にまとめる．
+            # 出現回数が1回以上のキーワードを一文にまとめる．
             keywords = ""
             for word, count in keyword_count:
-                if count >= 2:
+                if count >= 1:
                     keywords += word + ":" + str(count) + " "
 
             # キーワードをレコードに追加．
@@ -275,30 +275,37 @@ def recommend():
             # ユーザーからのメッセージごとのループ
             for message in message_list:
 
-                # 一致判定
-                score += sentences.count(message)
-
                 # キーワードごとのループ
                 for keyword_count in keyword_count_list:
+
                     if len(keyword_count.split(":")) == 2:
                         keyword = keyword_count.split(":")[0]
                         count = int(keyword_count.split(":")[1])
                         count_total += count
-                        similarity = difflib.SequenceMatcher(None, message, keyword).ratio() * count # 類似度
-                        similarity_total += similarity * count
 
-                score += difflib.SequenceMatcher(None, message, keyword).ratio() / count_total
+                        # 一致判定
+                        if message == keyword:
+                            score += int(count)
 
-
-            # score = similarity_total / count_total
+                        # 類似度判定 <= 表記揺れにしか使えない
+                        # similarity = difflib.SequenceMatcher(None, message, keyword).ratio() * count # 類似度
+                        # score += similarity
 
             score_list.append(score)
 
         # レコメンドする研究室のインデックスを取得
         score_array = np.array(score_list)
-        recommend_index1 = score_array.argsort()[::-1][0]
-        recommend_index2 = score_array.argsort()[::-1][1]
-        recommend_index3 = score_array.argsort()[::-1][2]
+        recommend_index1 = 0
+        recommend_index2 = 0
+        recommend_index3 = 0
+
+        if score_array[score_array.argsort()[::-1][0]] > 0:
+            recommend_index1 = score_array.argsort()[::-1][0]
+        if score_array[score_array.argsort()[::-1][1]] > 0:
+            recommend_index2 = score_array.argsort()[::-1][1]
+        if score_array[score_array.argsort()[::-1][2]] > 0:
+            recommend_index3 = score_array.argsort()[::-1][2]
+        # print(score_array.argsort()[::-1][2])
 
         cur = g.db.execute('select name, affiliation, specialized_field, research_theme, number_of_people, place, keywords from teachers')
         table = [dict(name=row[0], affiliation=row[1], specialized_field=row[2], research_theme=row[3], number_of_people=row[4], place=row[5], keywords=row[6]) for row in cur.fetchall()]
@@ -309,13 +316,17 @@ def recommend():
         row3 = {}
 
         for row in table:
-            if row_index == recommend_index1:
+            if recommend_index1 and row_index == recommend_index1:
                 row1 = row
-            elif row_index == recommend_index2:
+            elif recommend_index2 and row_index == recommend_index2:
                 row2 = row
-            if row_index == recommend_index3:
+            if recommend_index3 and row_index == recommend_index3:
                 row3 = row
             row_index += 1
+
+        for (name,score) in zip(name_list,score_list):
+            print(name,score)
+
 
 
         return render_template(
@@ -333,6 +344,8 @@ def recommend():
             row2 = row2,
             row3 = row3
         )
+
+
 
 # アプリ起動
 if __name__ == "__main__":
