@@ -151,11 +151,6 @@ def db_insert():
             titles_list = soup_name.find_all("th")
 
 
-            # 研究テーマ，人数，実施場所
-            # research_theme = ""
-            # number_of_people = ""
-            # place = ""
-
             for title in titles_list:
                 content = title.nextSibling.nextSibling
                 if title.string == u"研究テーマ":

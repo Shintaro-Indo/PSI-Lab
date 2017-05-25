@@ -20,13 +20,13 @@
 
     <div class = "parent">
         <div class = "child1">
-            <a href = "{{url1}}" ><img src = "{{img_url1}}"  width="104" height="130"></a>
+            <a href = "{{url1}}" ><img src = "{{img_url1}}"  width="150" height="185"></a>
         </div>
         <div class = "child2">
-            <h2>{{ row1.name}}</h2>
-            所属：{{ row1.affiliation }}<br>
-            専門分野：{{ row1.specialized_field }}<br>
-            研究テーマ：{{ row1.research_theme }}<br>
+            <p class = "name">{{ row1.name}}</p>
+            <dd>所属<br>{{ row1.affiliation }}<br></dd>
+            <dd>専門分野<br>{{ row1.specialized_field }}<br></dd>
+            <!-- <dd>研究テーマ：{{ row1.research_theme }}<br></dd> -->
         </div>
     </div>
     <br>
@@ -35,13 +35,13 @@
 
     <div class = "parent">
         <div class = "child1">
-            <a href = "{{url2}}" ><img src = "{{img_url2}}"  width="104" height="130"></a>
+            <a href = "{{url2}}" ><img src = "{{img_url2}}"  width="150" height="185"></a>
         </div>
         <div class = "child2">
-            <h2>{{ row2.name}}</h2>
-            所属：{{ row2.affiliation }}<br>
-            専門分野：{{ row2.specialized_field }}<br>
-            研究テーマ：{{ row2.research_theme }}<br>
+            <p class ="name">{{ row2.name}}</p>
+            <dd>所属<br>{{ row2.affiliation }}<br></dd>
+            <dd>専門分野<br>{{ row2.specialized_field }}<br></dd>
+            <!-- <dd>研究テーマ：{{ row2.research_theme }}<br></dd> -->
         </div>
     </div>
     <br>
@@ -50,15 +50,16 @@
 
     <div class = "parent">
         <div class = "child1">
-            <a href = "{{url3}}" ><img src = "{{img_url3}}"  width="104" height="130"></a>
+            <a href = "{{url3}}" ><img src = "{{img_url3}}"  width="150" height="185"></a>
         </div>
-        <div class = "child3">
-            <h2>{{ row3.name}}</h2>
-            所属：{{ row3.affiliation }}<br>
-            専門分野：{{ row3.specialized_field }}<br>
-            研究テーマ：{{ row3.research_theme }}<br>
+        <div class = "child2">
+            <p class="name">{{ row3.name}}</p>
+            <dd>所属<br>{{ row3.affiliation }}<br></dd>
+            <dd>専門分野<br>{{row3.specialized_field }}<br></dd>
+            <!-- <dd>研究テーマ：{{ row3.research_theme }}<br></dd> -->
         </div>
     </div>
+    <br>
     <br>
 
     <h4><a href="{{ url_for('index') }}">戻る</a></h4>
