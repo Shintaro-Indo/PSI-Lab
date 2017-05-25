@@ -2,7 +2,9 @@
 
 PSI研究室レコメンドサービス
 
-# http://compling.hss.ntu.edu.sg/wnja/data/1.1/wnjpn.db.gz　を main.dbと同じ階層にダウンロードしてから利用してください！
+# http://compling.hss.ntu.edu.sg/wnja/data/1.1/wnjpn.db.gz　
+
+を main.dbと同じ階層にダウンロードしてから利用してください！
 
 ・コンセプト
 
