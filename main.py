@@ -11,6 +11,10 @@ import numpy as np
 import MeCab
 import difflib
 
+import sys, sqlite3
+from collections import namedtuple
+# from pprint import pprint
+
 
 # 各種設定
 DATABASE = "main.db"
@@ -257,6 +261,68 @@ def recommend():
     else:
         score_list = [] # 各教員のキーワードとの類似度
 
+        # 類義語リストを作る
+        synonym_list = []
+
+        conn = sqlite3.connect("./wnjpn.db")
+
+        Word = namedtuple('Word', 'wordid lang lemma pron pos')
+
+        def getWords(lemma):
+          cur = conn.execute("select * from word where lemma=?", (lemma,))
+          return [Word(*row) for row in cur]
+
+
+        Sense = namedtuple('Sense', 'synset wordid lang rank lexid freq src')
+
+        def getSenses(word):
+          cur = conn.execute("select * from sense where wordid=?", (word.wordid,))
+          return [Sense(*row) for row in cur]
+
+        Synset = namedtuple('Synset', 'synset pos name src')
+
+        def getSynset(synset):
+          cur = conn.execute("select * from synset where synset=?", (synset,))
+          return Synset(*cur.fetchone())
+
+        def getWordsFromSynset(synset, lang):
+          cur = conn.execute("select word.* from sense, word where synset=? and word.lang=? and sense.wordid = word.wordid;", (synset,lang))
+          return [Word(*row) for row in cur]
+
+        def getWordsFromSenses(sense, lang="jpn"):
+          synonym = {}
+          for s in sense:
+            lemmas = []
+            syns = getWordsFromSynset(s.synset, lang)
+            for sy in syns:
+              lemmas.append(sy.lemma)
+            synonym[getSynset(s.synset).name] = lemmas
+          return synonym
+
+        def getSynonym (word):
+            synonym = {}
+            words = getWords(word)
+            if words:
+                for w in words:
+                    sense = getSenses(w)
+                    s = getWordsFromSenses(sense)
+                    synonym = dict(list(synonym.items()) + list(s.items()))
+            return synonym
+
+        # message_list = ["人工知能","サービス"]
+
+
+
+        for message in message_list:
+
+            synonym = np.array(list(getSynonym(message).values()))
+
+
+            for i in range(len(synonym)):
+                for j in range(len(synonym[i])):
+                    synonym_list.append(synonym[i][j])
+
+
         # 教員ごとのscoreを計算
         for teacher_index in range(len(name_list)):
 
@@ -283,13 +349,32 @@ def recommend():
                         count = int(keyword_count.split(":")[1])
                         count_total += count
 
-                        # 一致判定
+                        # 入力の一致判定
                         if message == keyword:
                             score += int(count)
 
-                        # 類似度判定 <= 表記揺れにしか使えない
-                        # similarity = difflib.SequenceMatcher(None, message, keyword).ratio() * count # 類似度
-                        # score += similarity
+            # 類語ごとのループ
+            for synonym in synonym_list:
+
+                # キーワードごとのループ
+                for keyword_count in keyword_count_list:
+
+                    if len(keyword_count.split(":")) == 2:
+                        keyword = keyword_count.split(":")[0]
+                        count = int(keyword_count.split(":")[1])
+                        count_total += count
+
+                        # 入力の一致判定
+                        if synonym == keyword:
+                            score += int(count)
+
+
+
+
+
+
+
+
 
             score_list.append(score)
 
@@ -325,7 +410,7 @@ def recommend():
             row_index += 1
 
         for (name,score) in zip(name_list,score_list):
-            print(name,score)
+            print(name.split(" ")[0] + "研", score)
 
 
 
