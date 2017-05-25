@@ -369,13 +369,6 @@ def recommend():
                             score += int(count)
 
 
-
-
-
-
-
-
-
             score_list.append(score)
 
         # レコメンドする研究室のインデックスを取得
