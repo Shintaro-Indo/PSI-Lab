@@ -5,7 +5,7 @@ PSI研究室レコメンドサービス
 <img src="./static/PSI-Lab1.png">  
   
 <img src="./static/PSI-Lab2.png">  
-    
+  
 <img src="./static/PSI-Lab3.png">  
   
 
